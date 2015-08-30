@@ -15,4 +15,3 @@ app.get('/categories', getCategories.listCategories);
 app.get('/sellers', getSellers.listSellers);
 app.get('/auctions', getAuctions.listAuctions);
 app.get('/favorites', getFavorites.listFavorites);
-

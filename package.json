@@ -1,10 +1,22 @@
 {
-  "name": "goodwill-API",
+  "name": "shopgoodwill-API",
   "version": "0.0.2",
   "private": true,
   "engines": {
     "node": "0.10.28",
     "npm": "1.4.13"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "debug": "forever -wfvd --minUptime 1000ms --spinSleepTime 1000ms start app.js --dev",
+    "test": "make test",
+    "watch-test": "node_modules/.bin/_mocha --watch --reporter spec",
+    "postinstall": ""
+  },
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/robksawyer/shopgoodwill-API.git"
   },
   "dependencies": {
     "cheerio": "^0.15.0",

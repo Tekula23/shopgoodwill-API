@@ -9,8 +9,6 @@ Computers-Electronics.Home-Electronics.Gaming-Systems-Games = 3
 Computers-Electronics.Home-Electronics.Gaming-Systems-Games.Atari-2600 = 4
 
 cagegory
-
-
 [
   { All Categories    0
 
@@ -42,7 +40,7 @@ cagegory
     { Collections/Sets : 74 },
     { Cookbooks :  127 },
     { Fiction : [
-        { All : 125 }, 
+        { All : 125 },
         { Action :  244 },
         { Classic Literature :  245 },
         { Drama : 247 },
@@ -223,12 +221,12 @@ cagegory
       Software    117
       Tablets   365
     Home & Business Phones   380
-    
+
   { Computers & Electronics : [
     { All : 7 },
     { Home Electronics : [
       {All : 32},
-      {Gaming Systems & Games : [   
+      {Gaming Systems & Games : [
         {All: 33}
         {Atari 2600 : 305}
         {Atari 5200 :  306}
@@ -239,7 +237,7 @@ cagegory
       ]},
     ]}
   ]}
-        
+
 
 
         Intellivision    310
