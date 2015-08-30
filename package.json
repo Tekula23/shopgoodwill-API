@@ -22,6 +22,7 @@
     "cheerio": "^0.15.0",
     "consolidate": "^0.10.0",
     "express": "^4.1.2",
+    "forever-monitor": "^1.6.0",
     "htmltidy": "git+https://github.com/bnicholas/htmltidy.git",
     "http": "0.0.0",
     "image-size": "^0.3.0",
