@@ -11,25 +11,37 @@ var http      = require('http');
 exports.listAuctions = function(req, res){
   var auctionsArray = [];
   var queryCat = 0;
-  var querySeller = "12";
+  var querySeller = "all";
   var queryPage = 1;
   var queryTerm = "";
 
   if(req.query.page) {
     queryPage = req.query.page;
   };
+  if(req.params.page) {
+    queryPage = req.params.page;
+  };
   if(req.query.cat) {
     queryCat = req.query.cat;
+  };
+  if(req.params.cat) {
+    queryCat = req.params.cat;
   };
   if(req.query.seller) {
     querySeller = req.query.seller;
   };
+  if(req.params.seller) {
+    querySeller = req.params.seller;
+  };
   if(req.query.term) {
     queryTerm = req.query.term;
   };
+  if(req.params.term) {
+    queryTerm = req.params.term;
+  };
 
   var url = {
-    base:   'http://www.shopgoodwill.com/search/searchKey.asp?showthumbs=on&sortBy=itemEndTime&closed=no&SortOrder=a&sortBy=itemEndTime&',
+    base:   'http://www.shopgoodwill.com/search/SearchKey.asp?showthumbs=on&sortBy=itemEndTime&closed=no&SortOrder=a&sortBy=itemEndTime&',
     page:   queryPage,
     seller: querySeller,
     cat:    queryCat,
@@ -37,7 +49,7 @@ exports.listAuctions = function(req, res){
     min:    null,
     max:    null,
     get full () {
-      return this.base+'itemTitle='+this.title+'&catid='+this.cat+'&sellerID='+this.seller+'&page='+this.page;
+      return this.base+'itemTitle='+this.title+'&catID='+this.cat+'&sellerID='+this.seller+'&page='+this.page;
     }
   };
 
@@ -57,17 +69,17 @@ exports.listAuctions = function(req, res){
       itemRows.each(function(i, el) {
         var auction = {};
         var itemTH = $(el).children('th');
-        auction.itemNumber = itemTH.eq(0).html().trim();
-        auction.itemName = itemTH.eq(1).children('a').html();
-        auction.itemName = auction.itemName.replace(/(\r\n|\n|\r)/gm,"");
-        auction.itemURL = itemTH.eq(1).children('a').attr('href');
-        auction.itemImage = itemTH.eq(1).children('img').attr('src');
-        auction.itemImage = auction.itemImage.replace("-thumb","");
-        auction.itemPrice = itemTH.eq(2).find('b').html();
-        auction.itemPrice = auction.itemPrice.replace("$","");
-        auction.itemBids = itemTH.eq(3).html();
-        auction.itemEnd = itemTH.eq(4).html();
-        auction.itemEnd = moment(auction.itemEnd, 'M/D/YYYY h:m:s a').fromNow();
+        auction.id = itemTH.eq(0).html().trim();
+        auction.title = itemTH.eq(1).children('a').html();
+        auction.title = auction.title.replace(/(\r\n|\n|\r)/gm,"");
+        auction.url = itemTH.eq(1).children('a').attr('href');
+        auction.img = itemTH.eq(1).children('img').attr('src');
+        auction.img = auction.img.replace("-thumb","");
+        auction.price = itemTH.eq(2).find('b').html();
+        auction.price = auction.price.replace("$","");
+        auction.bids = itemTH.eq(3).html();
+        auction.end = itemTH.eq(4).html();
+        auction.end = moment(auction.end, 'M/D/YYYY h:m:s a').fromNow();
         auctionsArray.push(auction);
         if(itemRows.length === i+1) {
           // console.log("sending JSON");
