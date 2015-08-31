@@ -1,6 +1,7 @@
 var cheerio = require('cheerio');
 var request = require('request');
 var tidy = require('htmltidy').tidy;
+var Entities = require('html-entities').AllHtmlEntities;
 var searchUrl = "http://www.shopgoodwill.com/search/";
 
 exports.listCategories = function(req, res){
@@ -21,12 +22,14 @@ exports.listCategories = function(req, res){
 		$ = cheerio.load(html);
 		var catOptions = $('select#catid').children('option');
 
+		entities = new Entities();
+
 		catOptions.each(function(i, el){
 			var catName = $(el).html();
 			var catID = $(el).val();
 			categoriesArray.push({
 				id : catID,
-				title : catName
+				title : entities.decode(catName)
 			});
 			// if(catName.indexOf("&gt;") < 0) {
 			//	categoriesArray.push({name : catName, id : catID});
