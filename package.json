@@ -7,8 +7,8 @@
     "npm": "1.4.*"
   },
   "scripts": {
-    "start": "node app.js",
-    "debug": "forever --watch",
+    "start": "node forever",
+    "debug": "node forever",
     "test": "make test"
   },
   "main": "app.js",
