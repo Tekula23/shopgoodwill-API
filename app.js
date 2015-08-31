@@ -1,10 +1,19 @@
 var express	= require('express');
 var path		= require('path');
-var app		= express();
+var app			= express();
 var port		= process.env.PORT || 5000;
-var os		= require('os');
+var os			= require('os');
 
-app.listen(port, function() { console.log("Listening on " + port) });
+app.listen(port, function() {
+	console.log("Listening on " + port)
+});
+
+app.all("/*", function(req, res, next){
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With");
+	res.header("Access-Control-Allow-Methods", "GET, PUT, POST");
+	return next();
+});
 
 var getHot  		= require('./getHot.js');
 var getSellers		= require('./getSellers.js');
