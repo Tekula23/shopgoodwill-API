@@ -5,9 +5,9 @@ var foreverOpt = {
   killTree: true,
   silent: false,
   minUptime: 1000,
-  sourceDir: '/',
+  sourceDir: './',
   watch: true,
-  logFile: '/logs'
+  logFile: './logs'
 }
 
 var child = new (forever.Monitor)('app.js', foreverOpt);

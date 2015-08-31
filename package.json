@@ -8,10 +8,8 @@
   },
   "scripts": {
     "start": "node app.js",
-    "debug": "forever -wfvd --minUptime 1000ms --spinSleepTime 1000ms start app.js --dev",
-    "test": "make test",
-    "watch-test": "node_modules/.bin/_mocha --watch --reporter spec",
-    "postinstall": ""
+    "debug": "forever --watch",
+    "test": "make test"
   },
   "main": "app.js",
   "repository": {
