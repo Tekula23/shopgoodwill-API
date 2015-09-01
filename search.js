@@ -65,7 +65,9 @@ exports.listAuctions = function(req, res){
     // iterate over rows and pull out available data
     if (itemRows.length < 1) {
       console.log("less than");
-      res.status(204).send({ error: "looks like this isn't a real page. I mean don't get me wrong. It's there, but there's no table on the page." });
+      //res.status(204).send({ error: "looks like this isn't a real page. I mean don't get me wrong. It's there, but there's no table on the page." });
+      auctionsArray = [{ message:"No results found." }];
+      sendJSON();
     }
     else {
       itemRows.each(function(i, el) {
