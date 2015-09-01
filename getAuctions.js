@@ -4,6 +4,7 @@ var tidy      = require('htmltidy').tidy;
 var moment    = require('moment');
 var url       = require('url');
 var http      = require('http');
+var changeCase = require('change-case');
 
 // var sizeOf    = require('image-size');
 // var imagesize = require('imagesize');
@@ -76,6 +77,7 @@ exports.listAuctions = function(req, res){
         auction.title = auction.title.replace(/(\r\n|\n|\r)/gm," ");
         auction.title = auction.title.replace(/(~)/gim,"");
         auction.title = auction.title.replace(/(�)/gim," ");
+        auction.title = changeCase.titleCase(auction.title);
         auction.url = itemTH.eq(1).children('a').attr('href');
         auction.img = itemTH.eq(1).children('img').attr('src');
         auction.thumbnail = auction.img.replace("-thumb","");

@@ -4,6 +4,7 @@ var url = require('url');
 var tidy = require('htmltidy').tidy;
 var Entities = require('html-entities').AllHtmlEntities;
 var searchUrl = "http://www.shopgoodwill.com/";
+var changeCase = require('change-case');
 
 exports.listFeatured = function(req, res){
 
@@ -32,6 +33,7 @@ exports.listFeatured = function(req, res){
 			item.title = item.title.replace(/(\r\n|\n|\r)/gm," ");
 			item.title = item.title.replace(/(~)/gim,"");
 			item.title = item.title.replace(/(�)/gim," ");
+			item.title = changeCase.titleCase(item.title);
 			console.log(item.title);
 			item.url = $(el).children('a').attr('href');
 			item.url = item.url.replace(/\/auctions\//gi,'').trim();
