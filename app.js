@@ -15,11 +15,12 @@ app.all("/*", function(req, res, next){
 	return next();
 });
 
-var getHot  		= require('./getHot.js');
+var getHot  			= require('./getHot.js');
 var getSellers		= require('./getSellers.js');
 var getCategories	= require('./getCategories.js');
-var getAuctions	= require('./getAuctions.js');
-var getAuction	= require('./getAuction.js');
+var getAuctions		= require('./getAuctions.js');
+var getAuction		= require('./getAuction.js');
+var search				= require('./search.js');
 var getFavorites	= require('./getFavorites.js');
 
 app.get('/hot', getHot.listHotAuctions);
@@ -28,3 +29,4 @@ app.get('/sellers', getSellers.listSellers);
 app.get('/auction', getAuction.viewAuction);
 app.get('/auctions', getAuctions.listAuctions);
 app.get('/favorites', getFavorites.listFavorites);
+app.get('/search', search.listAuctions);
