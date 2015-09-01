@@ -12,6 +12,7 @@ exports.viewAuction = function(req, res){
 	var item = {};
   var queryTitle = "";
   var queryId = "";
+	var itemURL = "";
 
   if(req.query.id) {
     queryId = req.query.id;
@@ -32,7 +33,7 @@ exports.viewAuction = function(req, res){
     id:  queryId,
     title:  queryTitle,
     get full () {
-			var itemURL = this.base + '/' + sanitize(this.title) + '-' + this.id + '.html';
+			itemURL = this.base + '/' + sanitize(this.title) + '-' + this.id + '.html';
 			console.log(itemURL);
       return itemURL;
     }
@@ -53,23 +54,31 @@ exports.viewAuction = function(req, res){
     //console.log(html);
     var $ = cheerio.load(html);
     // get a cheerio object array of the table rows
-    var itemCols = $('div.itemdetail').children('div').children('div');
+    var itemTitle = $('div.itemdetail h1#title').children('span').text();
+		var itemCols = $('div.itemdetail').children('div').children('div');
 
     // iterate over rows and pull out available data
     if (itemCols.length < 1) {
       console.log("less than");
       res.status(204).send({ error: "There was an issue finding the item details." });
     } else {
+
 			var firstCol = itemCols.eq(0).children('table').children('tr'); //image
 			var secondCol = itemCols.eq(1).find('table').children('tr').children('td'); //main content
 			var thirdCol = itemCols.eq(2).children('table').children('tr'); //bidding content
 			//console.log(thirdCol);
-			var imgSrc = $(firstCol).eq(1).children('td').find('img').attr('src');
-			item.img = (imgSrc) ? imgSrc : "";
-      item.id = secondCol.eq(1).html().trim();
+      item.id = parseInt(secondCol.eq(1).html().trim());
+			item.title = itemTitle;
+			item.price = parseFloat($('[itemprop="price"]').text().trim().replace(/(&nbsp;|\$)/gim,'')).toFixed(2);
+			item.description = $('[itemprop="description"]').text().trim().replace(/&nbsp;/gim,'');
+			item.url = itemURL;
 			if(!item.id){
 				res.status(204).send({ error: "There was an issue collecting the item details." });
 			}
+			var imgSrc = $(firstCol).eq(1).children('td').find('img').attr('src');
+			item.img = (imgSrc) ? imgSrc : "";
+			item.thumbnail = item.img;
+			item.img = item.img.replace("-thumb","");
 			if(secondCol.eq(2).html()){
       	item.quanitity = secondCol.eq(2).html().trim();
 				console.log("item.quanitity: " + item.quanitity);
@@ -97,6 +106,8 @@ exports.viewAuction = function(req, res){
 			}
 			if(secondCol.eq(7).html()){
       	item.payment = secondCol.eq(7).text().trim();
+      	item.payment = item.payment.replace(/Available Payment Methods:/gi,'').trim();
+      	item.payment = parseFloat(item.payment.replace(/or \(Through PayPal\)/gi,'').trim());
 				// item.payment = item.payment.replace(/(<!--.*-->)/gim, ''); //Remove commented items
 				// item.payment = item.payment.replace(/(\r\n|\n|\r|<br>)/gim, ' ');
       	// item.payment = item.payment.replace(/(<a.*>|<\/a>)/gim,'').trim();
@@ -106,7 +117,7 @@ exports.viewAuction = function(req, res){
 				console.log("item.payment: " + item.payment);
 			}
 			if(secondCol.eq(8).html()){
-      	item.shipping = secondCol.eq(8).html().trim();
+      	item.shipping = secondCol.eq(8).text().trim();
 				item.shipping = item.shipping.replace(/(\r\n|\n|\r|<br>)/gim, ' ');
       	item.shipping = item.shipping.replace(/(<a.*>|<\/a>)/gim,'').trim();
       	item.shipping = item.shipping.replace(/(<b>|<\/b>)/gim,'').trim();
@@ -114,18 +125,30 @@ exports.viewAuction = function(req, res){
       	item.shipping = item.shipping.replace(/(&nbsp;)/gim,'').trim();
 				console.log("item.shipping: " + item.shipping);
 			}
-			if(secondCol.eq(10).html()){
-      	item.returnPolicy = secondCol.eq(10).html().trim();
+			if(secondCol.eq(9).html()){
+      	item.returnPolicy = secondCol.eq(9).text().trim();
 				item.returnPolicy = item.returnPolicy.replace(/(&nbsp;)/gim,'').trim();
 				item.returnPolicy = item.returnPolicy.replace(/(\r\n|\n|\r|<br>)/gm, ' ');
 				console.log("item.returnPolicy: " + item.returnPolicy);
 			}
+			if(secondCol.eq(10).html()){
+				item.highBidder = secondCol.eq(10).html().trim();
+				item.highBidder = item.highBidder.replace(/(\r\n|\n|\r|<br>)/gm, ' ');
+				item.highBidder = item.highBidder.replace(/(&nbsp;)/gim,'').trim();
+				item.highBidder = item.highBidder.replace(/(\s\s|\t)/gm, ' ');
+				item.highBidder = item.highBidder.replace(/<b>(.*)<\/b>.*/, '$1');
+				console.log("item.highBidder: " + item.highBidder);
+			}
 			if(secondCol.eq(11).html()){
-				item.bidHistory = secondCol.eq(11).text().trim();
-				item.bidHistory = item.bidHistory.replace(/(\r\n|\n|\r|<br>)/gm, ' ');
-				item.bidHistory = item.bidHistory.replace(/(\s\s|\t)/gm, ' ');
-				item.bidHistory = item.bidHistory.replace(/(\( )/gm, '(');
-				console.log("item.bidHistory: " + item.bidHistory);
+				item.bids = secondCol.eq(11).text().trim();
+				item.bids = item.bids.replace(/(\r\n|\n|\r|<br>)/gm, ' ');
+				item.bids = item.bids.replace(/(&nbsp;)/gim,'').trim();
+				item.bids = item.bids.replace(/(\s\s|\t)/gm, ' ');
+				item.bids = parseInt(item.bids.replace(/\(.*\)/, '').trim());
+				if(typeof item.bids === 'undefined' || item.bids < 0){
+					item.bids = 0;
+				}
+				console.log("item.bids: " + item.bids);
 			}
       sendJSON();
     }; // end else
@@ -145,7 +168,9 @@ exports.viewAuction = function(req, res){
   }
 
   var sendJSON = function() {
-    res.jsonp(item);
+		var items = {};
+		items = item;
+    res.jsonp(items);
   };
 
   var tidyPage = function(body) {

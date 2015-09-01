@@ -49,7 +49,9 @@ exports.listAuctions = function(req, res){
     min:    null,
     max:    null,
     get full () {
-      return this.base+'itemTitle='+this.title+'&catID='+this.cat+'&sellerID='+this.seller+'&page='+this.page;
+      var auctionListURL = this.base+'itemTitle='+this.title+'&catID='+this.cat+'&sellerID='+this.seller+'&page='+this.page;
+      console.log("Finding auction items for: " + auctionListURL);
+      return auctionListURL;
     }
   };
 
@@ -74,12 +76,17 @@ exports.listAuctions = function(req, res){
         auction.title = auction.title.replace(/(\r\n|\n|\r)/gm,"");
         auction.url = itemTH.eq(1).children('a').attr('href');
         auction.img = itemTH.eq(1).children('img').attr('src');
-        auction.img = auction.img.replace("-thumb","");
+        auction.thumbnail = auction.img.replace("-thumb","");
         auction.price = itemTH.eq(2).find('b').html();
         auction.price = auction.price.replace("$","");
-        auction.bids = itemTH.eq(3).html();
-        auction.end = itemTH.eq(4).html();
-        auction.end = moment(auction.end, 'M/D/YYYY h:m:s a').fromNow();
+        auction.bids = parseInt(itemTH.eq(3).text());
+        auction.end = itemTH.eq(4).text();
+        if(auction.end.indexOf('in') === -1){
+          tEnd = moment(auction.end, 'M/D/YYYY h:m:s a').fromNow();
+          auction.end = tEnd;
+        } else {
+          auction.end = auction.end.replace(/PT/gim,'');
+        }
         auctionsArray.push(auction);
         if(itemRows.length === i+1) {
           // console.log("sending JSON");
