@@ -64,7 +64,9 @@ exports.listHotAuctions = function(req, res){
 			console.log("item id: " + auction.id);
 			auction.title = itemTD.eq(0).children('a').html();
 			console.log("item title: " + auction.title);
-			auction.title = auction.title.replace(/(\r\n|\n|\r)/gm,"");
+			auction.title = auction.title.replace(/(\r\n|\n|\r)/gm," ");
+			auction.title = auction.title.replace(/(~)/gim,"");
+			auction.title = auction.title.replace(/(�)/gim," ");
 			auction.url = itemTD.eq(0).children('a').attr('href');
 			console.log("item url: " + auction.url);
 			auction.thumbnail = itemDIV.eq(0).children('img').attr('src');

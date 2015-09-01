@@ -20,6 +20,7 @@ var getSellers		= require('./getSellers.js');
 var getCategories	= require('./getCategories.js');
 var getAuctions		= require('./getAuctions.js');
 var getAuction		= require('./getAuction.js');
+var getGallery		= require('./getAuctionGallery.js');
 var search				= require('./search.js');
 var getFavorites	= require('./getFavorites.js');
 
@@ -27,6 +28,7 @@ app.get('/hot', getHot.listHotAuctions);
 app.get('/categories', getCategories.listCategories);
 app.get('/sellers', getSellers.listSellers);
 app.get('/auction', getAuction.viewAuction);
+app.get('/gallery', getGallery.viewItem);
 app.get('/auctions', getAuctions.listAuctions);
 app.get('/favorites', getFavorites.listFavorites);
 app.get('/search', search.listAuctions);

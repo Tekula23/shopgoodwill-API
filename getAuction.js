@@ -68,6 +68,9 @@ exports.viewAuction = function(req, res){
 			var thirdCol = itemCols.eq(2).children('table').children('tr'); //bidding content
 			//console.log(thirdCol);
       item.id = parseInt(secondCol.eq(1).html().trim());
+			itemTitle = itemTitle.replace(/(\r\n|\n|\r)/gm," ");
+			itemTitle = itemTitle.replace(/(~)/gim,"");
+			itemTitle = itemTitle.replace(/(�)/gim," ");
 			item.title = itemTitle;
 			item.price = parseFloat($('[itemprop="price"]').text().trim().replace(/(&nbsp;|\$)/gim,'')).toFixed(2);
 			item.description = $('[itemprop="description"]').text().trim().replace(/&nbsp;/gim,'');
