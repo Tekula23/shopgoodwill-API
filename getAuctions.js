@@ -78,6 +78,7 @@ exports.listAuctions = function(req, res){
         auction.title = auction.title.replace(/(~)/gim,"");
         auction.title = auction.title.replace(/(�)/gim," ");
         auction.title = changeCase.titleCase(auction.title);
+        auction.title = updateSizes(auction.title);
         auction.url = itemTH.eq(1).children('a').attr('href');
         auction.img = itemTH.eq(1).children('img').attr('src');
         auction.thumbnail = auction.img.replace("-thumb","");
@@ -99,6 +100,14 @@ exports.listAuctions = function(req, res){
       }); // end itemRows.each
     }; // end else
   }; // end scrapeItems
+
+  /**
+   * Helper to change clothes sizes toUpperCase that were changed via change-case.
+   * @param str
+   */
+  var updateSizes = function(str){
+    return str.replace(/(XXL|XL|LRG|XXXL|SML|MED|NWT)/gi, function(a, l) { return l.toUpperCase(); });
+  };
 
   var getImageSize = function() {
     var getImage = http.get(auction.itemImage, function (response) {

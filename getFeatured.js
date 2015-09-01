@@ -34,16 +34,26 @@ exports.listFeatured = function(req, res){
 			item.title = item.title.replace(/(~)/gim,"");
 			item.title = item.title.replace(/(�)/gim," ");
 			item.title = changeCase.titleCase(item.title);
+			item.title = updateSizes(item.title);
 			console.log(item.title);
 			item.url = $(el).children('a').attr('href');
 			item.url = item.url.replace(/\/auctions\//gi,'').trim();
 			console.log(item.url);
 			item.id = item.url.replace(/.*-([0-9]*)?\.html/gim,'$1');
+			console.log(item.id);
 			featuredItemsArray.push(item);
 		});
 
 		res.jsonp(featuredItemsArray);
 	};
+
+	/**
+   * Helper to change clothes sizes toUpperCase that were changed via change-case.
+   * @param str
+   */
+  var updateSizes = function(str){
+    return str.replace(/(XXL|XL|LRG|XXXL|SML|MED|NWT)/gi, function(a, l) { return l.toUpperCase(); });
+  };
 
 	var cleanItem = function(itemName) {
 		var tCat = itemName.toLowerCase();

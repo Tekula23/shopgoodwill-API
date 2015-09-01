@@ -51,7 +51,8 @@ exports.viewItem = function(req, res){
 			item.title = item.title.replace(/(�)/gim," ");
 			item.url = $(galleryItem).children('a').first().attr('href').replace(/\/auctions\//gi,'');
 			item.img = $(galleryItem).children('a').children('img').first().attr('src');
-
+			item.id = item.url.replace(/.*-([0-9]*)?\.html/gim,'$1');
+			console.log(item.id);
       sendJSON();
     }; // end else
   }; // end scrapeItems
