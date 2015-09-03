@@ -69,7 +69,7 @@ exports.listAuctions = function(req, res){
     // get a cheerio object array of the table rows
     var itemRows = $('table.productresults tbody').first().children('tr');
     var totalSearchResults = $('.mainbluebox h1.whitetext').html();
-    if(typeof totalSearchResults !== undefined){
+    if(totalSearchResults && typeof totalSearchResults !== 'undefined'){
       totalSearchResults = totalSearchResults.replace(/([0-9]+).*/gi,'$1');
 
       //Add the total search results

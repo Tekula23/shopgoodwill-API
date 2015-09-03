@@ -17,11 +17,12 @@ exports.listAuctions = function(req, res){
     totalPages: 0,
     results: []
   };
-  var queryCat = 0;
+  var perPageTotal = 25;
+  var queryCat = 1;
   var querySeller = "all";
   var queryPage = 1;
   var queryTerm = "";
-  var sortBy = "itemEndTime";
+  var querySortBy = "itemEndTime";
 
   if(req.query.page) {
     queryPage = req.query.page;
@@ -48,10 +49,10 @@ exports.listAuctions = function(req, res){
     queryTerm = req.params.term;
   };
   if(req.query.sortBy) {
-    sortBy = req.query.sortBy;
+    querySortBy = req.query.sortBy;
   };
   if(req.params.sortBy) {
-    sortBy = req.params.sortBy;
+    querySortBy = req.params.sortBy;
   };
 
   var url = {
@@ -60,10 +61,11 @@ exports.listAuctions = function(req, res){
     seller: querySeller,
     cat:    queryCat,
     title:  queryTerm,
+    sort:   querySortBy,
     min:    null,
     max:    null,
     get full () {
-      var auctionListURL = this.base+'sortBy='+sortBy+'&itemTitle='+this.title+'&catID='+this.cat+'&sellerID='+this.seller+'&page='+this.page;
+      var auctionListURL = this.base+'sortBy='+this.sort+'&itemTitle='+this.title+'&catID='+this.cat+'&sellerID='+this.seller+'&page='+this.page;
       console.log("Finding auction items for: " + auctionListURL);
       return auctionListURL;
     }
@@ -75,7 +77,7 @@ exports.listAuctions = function(req, res){
     // get a cheerio object array of the table rows
     var itemRows = $('table.productresults tbody').first().children('tr');
     var totalSearchResults = $('.mainbluebox h1.whitetext').html();
-    if(typeof totalSearchResults !== undefined){
+    if(totalSearchResults && typeof totalSearchResults !== 'undefined'){
       totalSearchResults = totalSearchResults.replace(/([0-9]+).*/gi,'$1');
 
       //Add the total search results
@@ -109,7 +111,7 @@ exports.listAuctions = function(req, res){
 
     // iterate over rows and pull out available data
     if (itemRows.length < 1) {
-      console.log("less than");
+      console.log("getAuctions: itemRows.length < 1");
       res.status(204).send({ error: "looks like this isn't a real page. I mean don't get me wrong. It's there, but there's no table on the page." });
     }
     else {
