@@ -13,6 +13,7 @@ var visitor 	= ua(process.env.GA_UA, {https: true});
 exports.listAuctions = function(req, res){
   var searchResults = {
     total: 0,
+    totalPages: 0,
     results: []
   };
   var queryCat = 0;
@@ -75,7 +76,13 @@ exports.listAuctions = function(req, res){
       searchResults.total = totalSearchResults;
 
       //Add paging details
-      searchResults.totalPages = Math.ceil(totalSearchResults / perPageTotal);
+      if(totalSearchResults && perPageTotal){
+        if(parseInt(totalSearchResults) > parseInt(perPageTotal)){
+          searchResults.totalPages = Math.ceil(parseInt(totalSearchResults) / parseInt(perPageTotal));
+        } else {
+          searchResults.totalPages = 1;
+        }
+      }
 
       //Track the results
       var paramsResults = {
