@@ -1,10 +1,12 @@
-var cheerio = require('cheerio');
-var request = require('request');
-var url = require('url');
-var tidy = require('htmltidy').tidy;
-var Entities = require('html-entities').AllHtmlEntities;
-var searchUrl = "http://www.shopgoodwill.com/";
-var changeCase = require('change-case');
+var cheerio 			= require('cheerio');
+var request 			= require('request');
+var url 					= require('url');
+var tidy 					= require('htmltidy').tidy;
+var Entities 			= require('html-entities').AllHtmlEntities;
+var searchUrl 		= "http://www.shopgoodwill.com/";
+var changeCase 		= require('change-case');
+var ua 						= require('universal-analytics');
+var visitor 			= ua(process.env.GA_UA, {https: true});
 
 exports.listFeatured = function(req, res){
 

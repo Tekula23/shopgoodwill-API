@@ -4,6 +4,8 @@ var tidy      = require('htmltidy').tidy;
 var moment    = require('moment');
 var url       = require('url');
 var http      = require('http');
+var ua 				= require('universal-analytics');
+var visitor 	= ua(process.env.GA_UA, {https: true});
 
 // var sizeOf    = require('image-size');
 // var imagesize = require('imagesize');
@@ -53,6 +55,17 @@ exports.viewItem = function(req, res){
 			item.img = $(galleryItem).children('a').children('img').first().attr('src');
 			item.id = item.url.replace(/.*-([0-9]*)?\.html/gim,'$1');
 			console.log(item.id);
+			var paramsTitle = {
+				ec: "Auction Gallery",
+				ea: "getActionGallery",
+				el: "Title",
+				ev: item.title,
+				dp: req.originalUrl
+			}
+			visitor.event(paramsTitle, function (err) {
+				console.log("Error: Unable to track the title.");
+				console.log(err);
+			});
       sendJSON();
     }; // end else
   }; // end scrapeItems

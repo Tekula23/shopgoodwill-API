@@ -1,9 +1,11 @@
-var cheerio	= require('cheerio');
-var request	= require('request');
-var tidy		= require('htmltidy').tidy;
-var moment	 = require('moment');
-var url		 = require('url');
-var http		= require('http');
+var cheerio		= require('cheerio');
+var request		= require('request');
+var tidy			= require('htmltidy').tidy;
+var moment	 	= require('moment');
+var url		 		= require('url');
+var http			= require('http');
+var ua 				= require('universal-analytics');
+var visitor 	= ua(process.env.GA_UA, {https: true});
 
 // var sizeOf	 = require('image-size');
 // var imagesize = require('imagesize');

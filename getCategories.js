@@ -1,9 +1,11 @@
-var cheerio = require('cheerio');
-var request = require('request');
-var url = require('url');
-var tidy = require('htmltidy').tidy;
-var Entities = require('html-entities').AllHtmlEntities;
-var searchUrl = "http://www.shopgoodwill.com/search/";
+var cheerio 		= require('cheerio');
+var request			= require('request');
+var url 				= require('url');
+var tidy 				= require('htmltidy').tidy;
+var Entities 		= require('html-entities').AllHtmlEntities;
+var searchUrl 	= "http://www.shopgoodwill.com/search/";
+var ua 					= require('universal-analytics');
+var visitor 		= ua(process.env.GA_UA, {https: true});
 
 exports.listCategories = function(req, res){
 

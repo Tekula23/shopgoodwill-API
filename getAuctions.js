@@ -5,6 +5,8 @@ var moment    = require('moment');
 var url       = require('url');
 var http      = require('http');
 var changeCase = require('change-case');
+var ua 				= require('universal-analytics');
+var visitor 	= ua(process.env.GA_UA, {https: true});
 
 // var sizeOf    = require('image-size');
 // var imagesize = require('imagesize');

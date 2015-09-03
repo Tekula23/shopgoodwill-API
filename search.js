@@ -4,16 +4,23 @@ var tidy      = require('htmltidy').tidy;
 var moment    = require('moment');
 var url       = require('url');
 var http      = require('http');
+var ua 				= require('universal-analytics');
+var visitor 	= ua(process.env.GA_UA, {https: true});
 
 // var sizeOf    = require('image-size');
 // var imagesize = require('imagesize');
 
 exports.listAuctions = function(req, res){
-  var auctionsArray = [];
+  var searchResults = {
+    total: 0,
+    results: []
+  };
   var queryCat = 0;
   var querySeller = "all";
   var queryPage = 1;
   var queryTerm = "";
+
+  var perPageTotal = 25;
 
   if(req.query.page) {
     queryPage = req.query.page;
@@ -60,13 +67,35 @@ exports.listAuctions = function(req, res){
     var $ = cheerio.load(html);
     // get a cheerio object array of the table rows
     var itemRows = $('table.productresults tbody').first().children('tr');
-    // console.log(itemRows.length);
+    var totalSearchResults = $('.mainbluebox h1.whitetext').html();
+    if(typeof totalSearchResults !== undefined){
+      totalSearchResults = totalSearchResults.replace(/([0-9]+).*/gi,'$1');
+
+      //Add the total search results
+      searchResults.total = totalSearchResults;
+
+      //Add paging details
+      searchResults.totalPages = Math.ceil(totalSearchResults / perPageTotal);
+
+      //Track the results
+      var paramsResults = {
+        ec: "Search",
+        ea: "search",
+        el: "Total Results",
+        ev: totalSearchResults,
+        dp: req.originalUrl
+      }
+      visitor.event(paramsResults, function (err) {
+        console.log("Error: Unable to track the results.");
+        console.log(err);
+      });
+    }
+    console.log("Total search results: " + totalSearchResults);
 
     // iterate over rows and pull out available data
     if (itemRows.length < 1) {
-      console.log("less than");
+      console.log("search: itemRows.length < 1");
       //res.status(204).send({ error: "looks like this isn't a real page. I mean don't get me wrong. It's there, but there's no table on the page." });
-      auctionsArray = [{ message:"No results found." }];
       sendJSON();
     }
     else {
@@ -89,9 +118,21 @@ exports.listAuctions = function(req, res){
         } else {
           auction.end = auction.end.replace(/PT/gim,'');
         }
-        auctionsArray.push(auction);
+        searchResults.results.push(auction);
         if(itemRows.length === i+1) {
           // console.log("sending JSON");
+
+          var paramsQuery = {
+    				ec: "Search",
+    				ea: "search",
+    				el: "Query",
+    				ev: queryTerm,
+    				dp: req.originalUrl
+    			}
+    			visitor.event(paramsQuery, function (err) {
+    				console.log("Error: Unable to track the query.");
+    				console.log(err);
+    			});
           sendJSON();
         };
       }); // end itemRows.each
@@ -112,7 +153,7 @@ exports.listAuctions = function(req, res){
   }
 
   var sendJSON = function() {
-    res.jsonp(auctionsArray);
+    res.jsonp(searchResults);
   };
 
   var tidyPage = function(body) {
