@@ -12,11 +12,16 @@ var visitor 	= ua(process.env.GA_UA, {https: true});
 // var imagesize = require('imagesize');
 
 exports.listAuctions = function(req, res){
-  var auctionsArray = [];
+  var searchResults = {
+    total: 0,
+    totalPages: 0,
+    results: []
+  };
   var queryCat = 0;
   var querySeller = "all";
   var queryPage = 1;
   var queryTerm = "";
+  var sortBy = "itemEndTime";
 
   if(req.query.page) {
     queryPage = req.query.page;
@@ -42,9 +47,15 @@ exports.listAuctions = function(req, res){
   if(req.params.term) {
     queryTerm = req.params.term;
   };
+  if(req.query.sortBy) {
+    sortBy = req.query.sortBy;
+  };
+  if(req.params.sortBy) {
+    sortBy = req.params.sortBy;
+  };
 
   var url = {
-    base:   'http://www.shopgoodwill.com/search/SearchKey.asp?showthumbs=on&sortBy=itemEndTime&closed=no&SortOrder=a&sortBy=itemEndTime&',
+    base:   'http://www.shopgoodwill.com/search/SearchKey.asp?showthumbs=on&closed=no&SortOrder=a&',
     page:   queryPage,
     seller: querySeller,
     cat:    queryCat,
@@ -52,7 +63,7 @@ exports.listAuctions = function(req, res){
     min:    null,
     max:    null,
     get full () {
-      var auctionListURL = this.base+'itemTitle='+this.title+'&catID='+this.cat+'&sellerID='+this.seller+'&page='+this.page;
+      var auctionListURL = this.base+'sortBy='+sortBy+'&itemTitle='+this.title+'&catID='+this.cat+'&sellerID='+this.seller+'&page='+this.page;
       console.log("Finding auction items for: " + auctionListURL);
       return auctionListURL;
     }
@@ -63,7 +74,38 @@ exports.listAuctions = function(req, res){
     var $ = cheerio.load(html);
     // get a cheerio object array of the table rows
     var itemRows = $('table.productresults tbody').first().children('tr');
-    // console.log(itemRows.length);
+    var totalSearchResults = $('.mainbluebox h1.whitetext').html();
+    if(typeof totalSearchResults !== undefined){
+      totalSearchResults = totalSearchResults.replace(/([0-9]+).*/gi,'$1');
+
+      //Add the total search results
+      searchResults.total = totalSearchResults;
+      searchResults.totalPerPage = perPageTotal;
+
+      //Add paging details
+      if(totalSearchResults && perPageTotal){
+        if(parseInt(totalSearchResults) > parseInt(perPageTotal)){
+          searchResults.totalPages = Math.ceil(parseInt(totalSearchResults) / parseInt(perPageTotal));
+        } else {
+          searchResults.totalPages = 1;
+        }
+      }
+
+      //Track the results
+      var paramsResults = {
+        ec: "Auctions",
+        ea: "getAuctions",
+        el: "Total Results",
+        ev: totalSearchResults,
+        dp: req.originalUrl
+      }
+      visitor.event(paramsResults, function (err) {
+        console.log("Error: Unable to track the results.");
+        console.log(err);
+      });
+    }
+    console.log("Total search results: " + totalSearchResults);
+
 
     // iterate over rows and pull out available data
     if (itemRows.length < 1) {
@@ -94,7 +136,7 @@ exports.listAuctions = function(req, res){
         } else {
           auction.end = auction.end.replace(/PT/gim,'');
         }
-        auctionsArray.push(auction);
+        searchResults.results.push(auction);
         if(itemRows.length === i+1) {
           // console.log("sending JSON");
           sendJSON();
@@ -125,7 +167,7 @@ exports.listAuctions = function(req, res){
   }
 
   var sendJSON = function() {
-    res.jsonp(auctionsArray);
+    res.jsonp(searchResults);
   };
 
   var tidyPage = function(body) {

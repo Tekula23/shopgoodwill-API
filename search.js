@@ -74,6 +74,7 @@ exports.listAuctions = function(req, res){
 
       //Add the total search results
       searchResults.total = totalSearchResults;
+      searchResults.totalPerPage = perPageTotal;
 
       //Add paging details
       if(totalSearchResults && perPageTotal){
