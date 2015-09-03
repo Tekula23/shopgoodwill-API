@@ -3,6 +3,8 @@ var path		= require('path');
 var app			= express();
 var port		= process.env.PORT || 5000;
 var os			= require('os');
+var ua 			= require('universal-analytics');
+var visitor = ua(process.env.GA_UA);
 
 app.listen(port, function() {
 	console.log("Listening on " + port)

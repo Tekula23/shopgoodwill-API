@@ -28,3 +28,6 @@ bower_components
 
 .DS_Store
 */**/.DS_Store
+
+Local environment variables for Heroku
+.env
