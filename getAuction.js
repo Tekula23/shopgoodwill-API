@@ -13,7 +13,6 @@ var visitor 	= ua(process.env.GA_UA, {https: true});
 
 exports.viewAuction = function(req, res){
 	var item = {};
-  var queryTitle = "";
   var queryId = "";
 	var itemURL = "";
 
@@ -23,21 +22,13 @@ exports.viewAuction = function(req, res){
   if(req.params.id) {
     queryId = req.params.id;
   };
-  if(req.query.title) {
-    queryTitle = req.query.title;
-  };
-  if(req.params.title) {
-    queryTitle = req.params.title;
-  };
 	console.log("id: " + queryId);
-	console.log("title: " + queryTitle);
   var url = {
-    base:   'http://www.shopgoodwill.com/auctions',
-    id:  queryId,
-    title:  queryTitle,
+    base: 'http://www.shopgoodwill.com/viewItem.asp?',
+    id: queryId,
     get full () {
-			itemURL = this.base + '/' + sanitize(this.title) + '-' + this.id + '.html';
-			console.log(itemURL);
+			itemURL = this.base + 'itemID=' + this.id;
+			console.log("Final URL to parse: " + itemURL);
       return itemURL;
     }
   };
