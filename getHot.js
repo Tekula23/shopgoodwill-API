@@ -5,6 +5,7 @@ var moment	 	= require('moment');
 var url		 		= require('url');
 var http			= require('http');
 var ua 				= require('universal-analytics');
+var Entities 		= require('html-entities').AllHtmlEntities;
 var visitor 	= ua(process.env.GA_UA, {https: true});
 
 // var sizeOf	 = require('image-size');
@@ -57,6 +58,8 @@ exports.listHotAuctions = function(req, res){
 	} else {
 		console.log(itemRows.length + ' items found.');
 
+		entities = new Entities();
+
 		itemRows.each(function(i, el) {
 			var auction = {};
 			var itemTH = $(el).children('th');
@@ -65,10 +68,11 @@ exports.listHotAuctions = function(req, res){
 			auction.id = itemTH.eq(0).html().trim();
 			console.log("item id: " + auction.id);
 			auction.title = itemTD.eq(0).children('a').html();
-			console.log("item title: " + auction.title);
 			auction.title = auction.title.replace(/(\r\n|\n|\r)/gm," ");
 			auction.title = auction.title.replace(/(~)/gim,"");
 			auction.title = auction.title.replace(/(�)/gim," ");
+			auction.title = entities.decode(auction.title);
+			console.log("item title: " + auction.title);
 			auction.url = itemTD.eq(0).children('a').attr('href');
 			console.log("item url: " + auction.url);
 			auction.thumbnail = itemDIV.eq(0).children('img').attr('src');

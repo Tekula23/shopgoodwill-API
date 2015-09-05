@@ -5,6 +5,7 @@ var moment    = require('moment');
 var url       = require('url');
 var http      = require('http');
 var ua 				= require('universal-analytics');
+var Entities 		= require('html-entities').AllHtmlEntities;
 var visitor 	= ua(process.env.GA_UA, {https: true});
 
 // var sizeOf    = require('image-size');
@@ -59,6 +60,8 @@ exports.viewAuction = function(req, res){
     var itemTitle = $('div.itemdetail h1#title').children('span').text();
 		var itemCols = $('div.itemdetail').children('div').children('div');
 
+		entities = new Entities();
+
     // iterate over rows and pull out available data
     if (itemCols.length < 1) {
       console.log("less than");
@@ -74,6 +77,7 @@ exports.viewAuction = function(req, res){
 			itemTitle = itemTitle.replace(/(~)/gim,"");
 			itemTitle = itemTitle.replace(/(�)/gim," ");
 			item.title = itemTitle;
+			item.title = entities.decode(item.title);
 			item.price = parseFloat($('[itemprop="price"]').text().trim().replace(/(&nbsp;|\$)/gim,'')).toFixed(2);
 			item.description = $('[itemprop="description"]').text().trim().replace(/&nbsp;/gim,'');
 			item.url = itemURL;
