@@ -52,7 +52,9 @@ exports.listCategories = function(req, res){
 		var catOptions = $('select#catid').children('option');
 
 		//Build the parsable category list
-		var parsedCatList = buildCategoryList(catOptions);
+		// var parsedCatList = buildCategoryList(catOptions);
+		var catArray = [];
+		var parsedCatList = buildCategoryArray(catOptions, catArray);
 
 		// var parentCat;
 		// catOptions.each(function(i, el){
@@ -161,6 +163,7 @@ exports.listCategories = function(req, res){
 		var ptCatID = "";
 		var tTracker = [];
 		var counter = 0;
+		var sCounter = 0;
 		//
 		optionList.each(function(i, el) {
 			tCatName = $(el).html();
@@ -175,17 +178,12 @@ exports.listCategories = function(req, res){
 				tTracker = tCatName.split('>');
 
 				//When a new top level category is found, increment the counter
-				if(catList[counter + 1] === 'undefined' && catList[counter + 1].name !== tCatName && tTracker.length < 2){
-					console.log("HERE");
+				if(typeof catList[counter] !== 'undefined' && tTracker.length < 2 && catList[counter].name !== tCatName){
 					counter++;
 				}
 
-				console.log("tTracker.length");
-				console.log(tTracker.length);
 				//Push the top level category into an index
 				if(typeof catList[counter] === 'undefined' && tTracker.length < 2){
-					console.log("HERE2");
-					console.log(tCatName);
 					catList[counter] = {
 							id: tCatID,
 							name: tCatName,
@@ -197,51 +195,201 @@ exports.listCategories = function(req, res){
 				if(typeof tTracker !== 'undefined' && tTracker.length > 1){
 					//Traverse the subcategory array
 					_.forEach(tTracker, function(cat, j){
-						//Don't pull the first element (That's the top level category.)
-						if(typeof tTracker[j + 1] !== 'undefined'){
-							tCatName = tTracker[j + 1].trim();
-							catList[counter].subcategories.push({
-								id: tCatID,
-								name: tCatName
-							});
-						}
+							//Don't pull the first element (That's the top level category.)
+							if(typeof tTracker[1] !== 'undefined'){
+								tCatName = tTracker[1].trim();
+								var prevSubCatLength = catList[counter].subcategories.length - 1;
+								if(typeof tCatName !== 'undefined' && typeof catList[counter].subcategories[prevSubCatLength] !== 'undefined' && catList[counter].subcategories[prevSubCatLength].name !== tCatName){
+									catList[counter].subcategories.push({
+										id: tCatID,
+										name: tCatName,
+										subcategories: []
+									});
+								} else if (typeof tCatName !== 'undefined' && typeof catList[counter].subcategories[prevSubCatLength] === 'undefined') {
+									catList[counter].subcategories.push({
+										id: tCatID,
+										name: tCatName,
+										subcategories: []
+									});
+								}
+							}
 					});
+
+					//Traverse the subcategory 2 array
+					_.forEach(catList[counter].subcategories, function(subcat, o){
+
+						_.forEach(tTracker, function(cat, j){
+
+
+								//Traverse the subcategory 3 array
+								_.forEach(catList[counter].subcategories[o].subcategories, function(subcat2, w){
+										//Don't pull the first element (That's the top level category.)
+										if(typeof tTracker[3] !== 'undefined' && typeof catList[counter].subcategories[o].subcategories[w] !== 'undefined'){
+											tCatName = tTracker[3].trim();
+
+											console.log(tCatName);
+
+											var prevSubCatLength = catList[counter].subcategories[o].subcategories[w].subcategories.length - 1;
+											if(typeof tCatName !== 'undefined' && typeof catList[counter].subcategories[o].subcategories[w].subcategories[prevSubCatLength] !== 'undefined' && catList[counter].subcategories[o].subcategories[w].subcategories[prevSubCatLength].name !== tCatName){
+												catList[counter].subcategories[o].subcategories[w].subcategories.push({
+													id: tCatID,
+													name: tCatName,
+													subcategories: []
+												});
+											} else if (typeof tCatName !== 'undefined' && typeof catList[counter].subcategories[o].subcategories[w].subcategories[prevSubCatLength] === 'undefined') {
+												catList[counter].subcategories[o].subcategories[w].subcategories.push({
+													id: tCatID,
+													name: tCatName,
+													subcategories: []
+												});
+											}
+										}
+								});
+
+						});
+
+
+
+					});
+
+
 				}
 			}
-
-			//Found a new category name
-			// if(i < 1 || tCatName !== ptCatName){
-			// 	tCatName = $(el).html();
-			// 	tCatName = basicTitleClean(tCatName);
-			// 	tCatID = parseInt($(el).val());
-			// 	if(typeof catList[parseInt(tCatID)] === 'undefined' && tCatID > 0){
-			// 		catList[tCatID] = {
-			// 			id: tCatID,
-			// 			name: tCatName
-			// 		}
-			// 	} else {
-			// 		// catList[tCatID] = {
-			// 		// 	id: tCatID,
-			// 		// 	name: tCatName
-			// 		// }
-			// 	}
-			// } else {
-			// 	//Didn't find the category name in the prev temp name.
-			// }
-			//
-			// //Try to break the categories by a > first
-			// tTracker = tCatName.split('>');
-			// console.log(tTracker);
-			// if(typeof tTracker[0] !== 'undefined'){
-			// 	ptCatName = tTracker[0].trim();
-			// } else {
-			// 	ptCatName = tCatName.trim();
-			// }
-			//
-			// console.log("ptCatName: " + ptCatName);
-			// console.log("tTracker: " + tTracker);
 		});
 		return catList;
 	};
+
+	/**
+	 * Build an array of the categories
+	 * @param elements: object HTML Elements
+	 * @param tArray: array
+	 * @return array
+	 */
+	var buildCategoryArray = function(elements, tArray, categoryName, level, subCount){
+		var tCatName, tCatID, tTracker;
+		if(!level) level = 0;
+
+		elements.each(function(i, el) {
+			tCatName = $(el).html();
+			tCatName = basicTitleClean(tCatName);
+			tCatID = parseInt($(el).val());
+
+			if(tCatName !== 'All Categories'){
+
+				//Split the sub categories into an array
+				//Note: The first element is going to be the top level element
+				tTracker = tCatName.split('>');
+
+				if(typeof tArray[level] === 'undefined' || tTracker[tTracker.length-1] !== tArray[level].name){
+					tCatName = tTracker[tTracker.length-1];
+					if(tTracker.length > 3){
+						// tArray[tTracker.length - 3].push({
+						// 			id: tCatID,
+						// 			name: tCatName,
+						// 			subcount: getSubCount(elements, tCatName)
+						// 		});
+						// console.log("-------> " + tCatName);
+					} else if(tTracker.length > 2){
+						// tArray[tTracker.length - 2].push({
+						// 			id: tCatID,
+						// 			name: tCatName,
+						// 			subcount: getSubCount(elements, tCatName)
+						// 		});
+						// console.log("----> " + tCatName);
+					} else if(tTracker.length > 1) {
+						// console.log("--> " + tCatName);
+						console.log(tTracker[0] + " === " + tArray[ tArray.length-1 ].name);
+
+						if(tArray[ tArray.length-1 ].name.trim().toLowerCase() === tTracker[0].trim().toLowerCase()){
+							console.log("HERE");
+							console.log(tCatName);
+							if(typeof tArray[ tArray.length-1 ].sub === 'undefined'){
+								tArray[ tArray.length-1 ].sub = [];
+							}
+							tArray[ tArray.length-1 ].sub.push({
+										id: tCatID,
+										name: tCatName,
+										subcount: getSubCount(elements, tCatName)
+									});
+							console.log(tArray[ tArray.length-1 ].sub);
+						}
+						//
+						// if(tArray[tArray.length-1].subcount > 0){
+						// 	//Get the subcategories and then return.
+						// 	tArray[tArray.length-1].subcategories = [];
+						// 	tArray[tArray.length-1].subcategories = buildCategoryArray(elements, tArray[tArray.length-1].subcategories, tCatName, level++, tArray[tArray.length-1].subcount);
+						// }
+					} else {
+						// console.log("-> " + tCatName);
+						if(typeof tCatID !== 'undefined'){
+							tArray.push({
+										id: tCatID,
+										name: tCatName,
+										subcount: getSubCount(elements, tCatName)
+									});
+						}
+					}
+
+
+				}
+				// else if (typeof categoryName !== 'undefined'){
+				// 	if(categoryName === tTracker[tTracker.length - 1]){
+				// 		tCatName = tTracker[tTracker.length-1];
+				// 		tArray.push({
+				// 					id: tCatID,
+				// 					name: tCatName,
+				// 					subcount: getSubCount(elements, tCatName)
+				// 				});
+				//
+				// 		if(tArray[tArray.length-1].subcount > 0){
+				// 			//Get the subcategories and then return.
+				// 			tArray.subcategories = [];
+				// 			tArray.subcategories = buildCategoryArray(elements, tArray.subcategories, tCatName);
+				// 		}
+				// 	}
+				// }
+
+				// if(tArray[tCatName].subcount > 0){
+				// 	_.forEach(tTracker, function(cat, j){
+				// 			//Don't pull the first element (That's the top level category.)
+				// 			if(typeof tTracker[j] !== 'undefined'){
+				// 				tSubCatName = tTracker[j].trim();
+				// 				tArray[tCatName] = [];
+				// 				tArray[tCatName][tSubCatName] = {
+				// 					id: tCatID,
+				// 					name: tSubCatName
+				// 				};
+				// 			}
+				// 	});
+				// }
+
+			}
+		});
+		return tArray;
+	}
+
+
+	var getSubcategories = function(){
+		var subCatArray = [];
+		//Don't pull the first element (That's the top level category.)
+		if(typeof tTracker[2] !== 'undefined'){
+			tCatName = tTracker[2].trim();
+			var prevSubCatLength = catList[counter].subcategories[o].subcategories.length - 1;
+			if(typeof tCatName !== 'undefined' && typeof catList[counter].subcategories[o].subcategories[prevSubCatLength] !== 'undefined' && catList[counter].subcategories[o].subcategories[prevSubCatLength].name !== tCatName){
+				catList[counter].subcategories[o].subcategories.push({
+					id: tCatID,
+					name: tCatName,
+					subcategories: []
+				});
+			} else if (typeof tCatName !== 'undefined' && typeof catList[counter].subcategories[o].subcategories[prevSubCatLength] === 'undefined') {
+				catList[counter].subcategories[o].subcategories.push({
+					id: tCatID,
+					name: tCatName,
+					subcategories: []
+				});
+			}
+		}
+		return subCatArray;
+	}
 
 };
