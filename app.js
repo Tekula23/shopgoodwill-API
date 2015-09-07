@@ -19,18 +19,20 @@ app.all("/*", function(req, res, next){
 	return next();
 });
 
-var getHot  			= require('./getHot.js');
-var getSellers		= require('./getSellers.js');
-var getCategories	= require('./getCategories.js');
-var getFeatured		= require('./getFeatured.js');
-var getAuctions		= require('./getAuctions.js');
-var getAuction		= require('./getAuction.js');
-var getGallery		= require('./getAuctionGallery.js');
-var search				= require('./search.js');
-var getFavorites	= require('./getFavorites.js');
+var getHot  				= require('./getHot.js');
+var getSellers			= require('./getSellers.js');
+var getCategories		= require('./getCategories.js');
+var getCategoryList	= require('./getCategoryList.js');
+var getFeatured			= require('./getFeatured.js');
+var getAuctions			= require('./getAuctions.js');
+var getAuction			= require('./getAuction.js');
+var getGallery			= require('./getAuctionGallery.js');
+var search					= require('./search.js');
+var getFavorites		= require('./getFavorites.js');
 
 app.get('/hot', getHot.listHotAuctions);
 app.get('/categories', getCategories.listCategories);
+app.get('/list', getCategoryList.listCategories);
 app.get('/featured', getFeatured.listFeatured);
 app.get('/sellers', getSellers.listSellers);
 app.get('/auction', getAuction.viewAuction);

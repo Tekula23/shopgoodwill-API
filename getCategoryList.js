@@ -33,12 +33,7 @@ exports.listCategories = function(req, res){
 			tidy(body, function(error, html){
 				if(!error) {
 					//Get top level categories
-					if(page && !queryCat){
-						getCategories(html, page);
-					} else {
-						//Get sub level categories
-						getSubCategory(html, queryCat);
-					}
+					getCategories(html, page);
 				}
 			});
 		}
@@ -58,37 +53,36 @@ exports.listCategories = function(req, res){
 
 		//Build the parsable category list
 		var parsedCatList = buildCategoryList(catOptions);
-		console.log(parsedCatList);
 
-		var parentCat;
-		catOptions.each(function(i, el){
-			var catName = $(el).html();
-			catName = basicTitleClean(catName);
-			var catID = parseInt($(el).val());
-			switch(page){
-				case 1:
-					if(catName !== 'All Categories'){
-						//Only pull items that do not include a < symbol
-						if(catName.indexOf(">") < 0){
-							categoriesArray.push({
-								id : catID,
-								title : catName,
-								subCount: getSubCount(html, catName)
-							});
-							parentCat = catName;
-						}
-					}
-					break;
-				default:
-					categoriesArray.push({
-						id : catID,
-						title : catName
-					});
-					break;
-			}
-		});
+		// var parentCat;
+		// catOptions.each(function(i, el){
+		// 	var catName = $(el).html();
+		// 	catName = basicTitleClean(catName);
+		// 	var catID = parseInt($(el).val());
+		// 	switch(page){
+		// 		case 1:
+		// 			if(catName !== 'All Categories'){
+		// 				//Only pull items that do not include a < symbol
+		// 				if(catName.indexOf(">") < 0){
+		// 					categoriesArray.push({
+		// 						id : catID,
+		// 						title : catName,
+		// 						subCount: getSubCount(html, catName)
+		// 					});
+		// 					parentCat = catName;
+		// 				}
+		// 			}
+		// 			break;
+		// 		default:
+		// 			categoriesArray.push({
+		// 				id : catID,
+		// 				title : catName
+		// 			});
+		// 			break;
+		// 	}
+		// });
 
-		res.jsonp(categoriesArray);
+		res.jsonp(parsedCatList);
 	};
 
 	/**
@@ -117,6 +111,7 @@ exports.listCategories = function(req, res){
 		tCat = tCat.replace(/&/g,'');
 		tCat = tCat.replace(/\//g,'');
 		tCat = tCat.replace(/ /g,'');
+		tCat = tCat.trim();
 		return tCat;
 	}
 
@@ -165,24 +160,48 @@ exports.listCategories = function(req, res){
 		var tCatID = "";
 		var ptCatID = "";
 		var tTracker = [];
+		var counter = 0;
+		//
 		optionList.each(function(i, el) {
 			tCatName = $(el).html();
 			tCatName = basicTitleClean(tCatName);
 			tCatID = parseInt($(el).val());
-			console.log("id: " + tCatID);
-			console.log("name: " + tCatName);
+			// console.log("id: " + tCatID);
+			// console.log("name: " + tCatName);
 			if(tCatName !== 'All Categories'){
+
+				//Split the sub categories into an array
+				//Note: The first element is going to be the top level element
 				tTracker = tCatName.split('>');
+
+				//When a new top level category is found, increment the counter
+				if(catList[counter + 1] === 'undefined' && catList[counter + 1].name !== tCatName && tTracker.length < 2){
+					console.log("HERE");
+					counter++;
+				}
+
+				console.log("tTracker.length");
+				console.log(tTracker.length);
+				//Push the top level category into an index
+				if(typeof catList[counter] === 'undefined' && tTracker.length < 2){
+					console.log("HERE2");
+					console.log(tCatName);
+					catList[counter] = {
+							id: tCatID,
+							name: tCatName,
+							subcategories: []
+						};
+				}
+
+				//Make sure the category has subcategories
 				if(typeof tTracker !== 'undefined' && tTracker.length > 1){
-					console.log(tTracker);
-					_.forEach(tTracker, function(j, cat){
-						if(typeof tTracker[j] !== 'undefined'){
-							tCatName = tTracker[j].trim();
-							//TODO: Figure out how to build a three level array
-							//[Main Cats][Secondary Cats][Third Set of Categories]
-							//Something > Else > Here
-							catList[i].push({
-								id: null,
+					//Traverse the subcategory array
+					_.forEach(tTracker, function(cat, j){
+						//Don't pull the first element (That's the top level category.)
+						if(typeof tTracker[j + 1] !== 'undefined'){
+							tCatName = tTracker[j + 1].trim();
+							catList[counter].subcategories.push({
+								id: tCatID,
 								name: tCatName
 							});
 						}
@@ -225,38 +244,4 @@ exports.listCategories = function(req, res){
 		return catList;
 	};
 
-	/**
-	 * getSubCategory
-	 * Action to build and retrieve subcategory lists.
-	 */
-	var getSubCategory = function(html, parentCategoryId, level){
-		var categoriesArray = [];
-		var subCategoriesArray = [];
-		$ = cheerio.load(html);
-		var catOptions = $('select#catid').children('option');
-
-		catOptions.each(function(i, el){
-			var catName = $(el).html();
-			catName = basicTitleClean(catName);
-			var catID = $(el).val();
-			if(parseInt(catID) === parseInt(parentCategoryId)){
-				console.log("--- Subcategory ID:" + catID + ' ---');
-				console.log("--- Subcategory Name:" + catName + ' ---');
-
-				// tPCat = cleanCategory(parentCategoryId);
-				// console.log(tCat + " --> " + tPCat);
-				// if(tCat.indexOf(tPCat) > -1 && tCat !== tPCat){
-					//if(tCat && tCat.length > 0){
-						subCategoriesArray.push({
-							id : catID,
-							title : catName,
-							parent: parentCategoryId
-						});
-					//}
-				// }
-			}
-		});
-
-		res.jsonp(subCategoriesArray);
-	};
 };
