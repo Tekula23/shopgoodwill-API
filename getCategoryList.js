@@ -156,9 +156,7 @@ exports.listCategories = function(req, res){
 		//Load the categories
 		catList = loadCategoryFile('json/categories.json');
 	} else {
-		console.log("Getting sub category "+ queryCat);
 		catList = getSubCategory(queryCat);
-		console.log(catList);
 	}
 
 	res.jsonp(catList);
