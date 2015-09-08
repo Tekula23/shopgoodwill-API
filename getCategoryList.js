@@ -52,7 +52,6 @@ exports.listCategories = function(req, res){
 					}
 					if(typeof cat2.subcategory !== 'undefined'){
 						_.forEach(cat2.subcategory, function(cat3, b){
-							console.log(cat3.id);
 							if(cat3.id === catId){
 								catData = cat3.subcategory;
 								return;
