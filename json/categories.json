@@ -28,7 +28,7 @@
 	}, {
 		"id": 72,
 		"name": "Sculptures"
-	}, ]
+	}]
 }, {
 	"id": 336,
 	"name": "Bath & Body",
@@ -41,7 +41,7 @@
 	}, {
 		"id": 338,
 		"name": "Personal Care"
-	}, ]
+	}]
 }, {
 	"id": 2,
 	"name": "Books & Movies & Music",
@@ -424,7 +424,7 @@
 			"id": 408,
 			"name": "Vests"
 		}]
-	}, ]
+	}]
 }, {
 	"id": 4,
 	"name": "Collectibles",
@@ -475,10 +475,11 @@
 		"name": "Historical Documents"
 	}, {
 		"id": 41,
-		"name": "Hollywood Memorabilia"
-	}, {
-		"id": 422,
-		"name": "Hollywood Memorabilia > Disney"
+		"name": "Hollywood Memorabilia",
+		"subcategory": [{
+			"id": 422,
+			"name": "Disney"
+		}]
 	}, {
 		"id": 407,
 		"name": "Lighters"
@@ -490,22 +491,24 @@
 		"name": "Lunch Boxes"
 	}, {
 		"id": 106,
-		"name": "Military Memorabilia"
-	}, {
-		"id": 327,
-		"name": "Military Memorabilia > Uniforms"
+		"name": "Military Memorabilia",
+		"subcategory": [{
+			"id": 327,
+			"name": "Uniforms"
+		}]
 	}, {
 		"id": 345,
 		"name": "Music Boxes"
 	}, {
 		"id": 122,
-		"name": "Music Memorabilia"
-	}, {
-		"id": 421,
-		"name": "Music Memorabilia > Beatles"
-	}, {
-		"id": 420,
-		"name": "Music Memorabilia > Elvis"
+		"name": "Music Memorabilia",
+		"subcategory": [{
+			"id": 421,
+			"name": "Beatles"
+		}, {
+			"id": 420,
+			"name": "Elvis"
+		}]
 	}, {
 		"id": 35,
 		"name": "Plush Toys"
@@ -595,7 +598,7 @@
 		}, {
 			"id": 365,
 			"name": "Tablets"
-		}, ]
+		}]
 	}, {
 		"id": 380,
 		"name": "Home & Business Phones"
@@ -924,7 +927,7 @@
 			"id": 341,
 			"name": "Women's Watches"
 		}]
-	}, ]
+	}]
 }, {
 	"id": 113,
 	"name": "Miscellaneous",
@@ -1049,7 +1052,7 @@
 			"id": 349,
 			"name": "Winter Sports"
 		}]
-	}, ]
+	}]
 }, {
 	"id": 20,
 	"name": "Tableware and Kitchenware",

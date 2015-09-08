@@ -22,6 +22,7 @@
     "consolidate": "^0.10.0",
     "express": "^4.1.2",
     "forever-monitor": "^1.6.0",
+    "fs": "0.0.2",
     "html-entities": "^1.1.3",
     "htmltidy": "git+https://github.com/bnicholas/htmltidy.git",
     "http": "0.0.0",
