@@ -26,34 +26,34 @@ exports.listAuctions = function(req, res){
 
   if(req.query.page) {
     queryPage = req.query.page;
-  };
+  }
   if(req.params.page) {
     queryPage = req.params.page;
-  };
+  }
   if(req.query.cat) {
     queryCat = req.query.cat;
-  };
+  }
   if(req.params.cat) {
     queryCat = req.params.cat;
-  };
+  }
   if(req.query.seller) {
     querySeller = req.query.seller;
-  };
+  }
   if(req.params.seller) {
     querySeller = req.params.seller;
-  };
+  }
   if(req.query.term) {
     queryTerm = req.query.term;
-  };
+  }
   if(req.params.term) {
     queryTerm = req.params.term;
-  };
+  }
   if(req.query.sortBy) {
     querySortBy = req.query.sortBy;
-  };
+  }
   if(req.params.sortBy) {
     querySortBy = req.params.sortBy;
-  };
+  }
 
   var url = {
     base:   'http://www.shopgoodwill.com/search/SearchKey.asp?showthumbs=on&closed=no&SortOrder=a&',
@@ -100,10 +100,12 @@ exports.listAuctions = function(req, res){
         el: "Total Results",
         ev: totalSearchResults,
         dp: req.originalUrl
-      }
+      };
       visitor.event(paramsResults, function (err) {
-        console.log("Error: Unable to track the results.");
-        console.log(err);
+        if(err){
+          console.log("Error: Unable to track the results.");
+          console.log(err);
+        }
       });
     }
     console.log("Total search results: " + totalSearchResults);
@@ -142,9 +144,9 @@ exports.listAuctions = function(req, res){
         if(itemRows.length === i+1) {
           // console.log("sending JSON");
           sendJSON();
-        };
+        }
       }); // end itemRows.each
-    }; // end else
+    } // end else
   }; // end scrapeItems
 
   /**
@@ -166,7 +168,7 @@ exports.listAuctions = function(req, res){
         getImage.abort();
       }); // end imagesize
     }); // end getImage
-  }
+  };
 
   var sendJSON = function() {
     res.jsonp(searchResults);
@@ -193,4 +195,4 @@ exports.listAuctions = function(req, res){
     }
   });
 
-}
+};

@@ -20,16 +20,16 @@ exports.listHotAuctions = function(req, res){
 
 	if(req.query.page) {
 		queryPage = req.query.page;
-	};
+	}
 	if(req.query.cat) {
 		queryCat = req.query.cat;
-	};
+	}
 	if(req.query.seller) {
 		querySeller = req.query.seller;
-	};
+	}
 	if(req.query.term) {
 		queryTerm = req.query.term;
-	};
+	}
 
 	var url = {
 			//base:	'http://www.shopgoodwill.com/search/searchKey.asp?showthumbs=on&sortBy=itemEndTime&closed=no&SortOrder=a&sortBy=itemEndTime&',
@@ -92,9 +92,9 @@ exports.listHotAuctions = function(req, res){
 			if(itemRows.length === i+1) {
 				console.log("sending JSON");
 				sendJSON();
-			};
+			}
 		}); // end itemRows.each
-	}; // end else
+	} // end else
 	}; // end scrapeItems
 
 	var getImageSize = function() {
@@ -108,7 +108,7 @@ exports.listHotAuctions = function(req, res){
 				getImage.abort();
 			}); // end imagesize
 		}); // end getImage
-	}
+	};
 
 	var sendJSON = function() {
 		res.jsonp(auctionsArray);
@@ -135,4 +135,4 @@ exports.listHotAuctions = function(req, res){
 		}
 	});
 
-}
+};

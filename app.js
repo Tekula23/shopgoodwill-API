@@ -5,13 +5,12 @@ var port		= process.env.PORT || 5000;
 var os			= require('os');
 var ua 			= require('universal-analytics');
 var nr 			= require('newrelic');
-var visitor = undefined;
+var socket 	= require('socket.io');
+var visitor = ua(process.env.GA_UA);
 
-express.use(ua.middleware(process.env.GA_UA, {cookieName: '_ga'}));
-visitor = ua.createFromSession(socket.handshake.session);
 
 app.listen(port, function() {
-	console.log("Listening on " + port)
+	console.log("Listening on " + port);
 });
 
 app.all("/*", function(req, res, next){
@@ -19,8 +18,8 @@ app.all("/*", function(req, res, next){
 	res.header("Access-Control-Allow-Headers", "Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With");
 	res.header("Access-Control-Allow-Methods", "GET, PUT, POST");
 	visitor.pageview(req.originalUrl).send();
-	console.log("--- UA: Visitor ---");
-	console.log(visitor.ua(process.env.GA_UA).debug());
+	// console.log("--- UA: Visitor ---");
+	// console.log(visitor.debug());
 	return next();
 });
 

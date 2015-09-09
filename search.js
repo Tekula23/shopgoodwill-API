@@ -94,8 +94,10 @@ exports.listAuctions = function(req, res){
         dp: req.originalUrl
       };
       visitor.event(paramsResults, function (err) {
-        console.log("Error: Unable to track the results.");
-        console.log(err);
+        if(err){
+          console.log("Error: Unable to track the results.");
+          console.log(err);
+        }
       });
     }
     console.log("Total search results: " + totalSearchResults);
@@ -139,8 +141,10 @@ exports.listAuctions = function(req, res){
     				dp: req.originalUrl
     			};
     			visitor.event(paramsQuery, function (err) {
-    				console.log("Error: Unable to track the query.");
-    				console.log(err);
+            if(err){
+				      console.log("Error: Unable to track the query.");
+				      console.log(err);
+            }
     			});
           sendJSON();
         }

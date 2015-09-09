@@ -61,13 +61,15 @@ exports.viewItem = function(req, res){
 				el: "Title",
 				ev: item.title,
 				dp: req.originalUrl
-			}
+			};
 			visitor.event(paramsTitle, function (err) {
-				console.log("Error: Unable to track the title.");
-				console.log(err);
+				if(err){
+					console.log("Error: Unable to track the title.");
+					console.log(err);
+				}
 			});
       sendJSON();
-    }; // end else
+    } // end else
   }; // end scrapeItems
 
   var getImageSize = function() {
@@ -81,7 +83,7 @@ exports.viewItem = function(req, res){
         getImage.abort();
       }); // end imagesize
     }); // end getImage
-  }
+  };
 
   var sendJSON = function() {
 		var items = {};
@@ -110,4 +112,4 @@ exports.viewItem = function(req, res){
     }
   });
 
-}
+};

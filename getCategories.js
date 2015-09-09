@@ -16,15 +16,15 @@ exports.listCategories = function(req, res){
 
 	if(req.params.catId) {
 		queryCat = req.params.catId;
-	};
+	}
 
 	if(req.query.catId) {
 		queryCat = req.query.catId;
-	};
+	}
 
 	if(req.query.page) {
 		page = req.query.page;
-	};
+	}
 
 	/**
 	 * request
@@ -105,7 +105,7 @@ exports.listCategories = function(req, res){
 		str = str.replace(/\//g,' & ');
 		str = str.replace(/\n|\r|\n\r/g,' '); //Convert new lines to spaces
 		return str;
-	}
+	};
 
 	/**
 	 * cleanCategory
@@ -119,7 +119,7 @@ exports.listCategories = function(req, res){
 		tCat = tCat.replace(/\//g,'');
 		tCat = tCat.replace(/ /g,'');
 		return tCat;
-	}
+	};
 
 	/**
 	 * getSubCount

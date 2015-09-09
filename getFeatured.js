@@ -32,18 +32,14 @@ exports.listFeatured = function(req, res){
 		featuredItems.each(function(i, el){
 			var item = {};
 			item.title = $(el).children('a').children('span').first().text().trim();
-			console.log(item.title);
 			item.title = item.title.replace(/(\r\n|\n|\r)/gm," ");
 			item.title = item.title.replace(/(~)/gim,"");
 			item.title = item.title.replace(/(�)/gim," ");
 			item.title = changeCase.titleCase(item.title);
 			item.title = updateSizes(item.title);
-			console.log(item.title);
 			item.url = $(el).children('a').attr('href');
 			item.url = item.url.replace(/\/auctions\//gi,'').trim();
-			console.log(item.url);
 			item.id = item.url.replace(/.*-([0-9]*)?\.html/gim,'$1');
-			console.log(item.id);
 			featuredItemsArray.push(item);
 		});
 
@@ -66,6 +62,6 @@ exports.listFeatured = function(req, res){
 		tCat = tCat.replace(/\//g,'');
 		tCat = tCat.replace(/ /g,'');
 		return tCat;
-	}
+	};
 
 };

@@ -18,10 +18,10 @@ exports.viewAuction = function(req, res){
 
   if(req.query.id) {
     queryId = req.query.id;
-  };
+  }
   if(req.params.id) {
     queryId = req.params.id;
-  };
+  }
 	console.log("id: " + queryId);
   var url = {
     base: 'http://www.shopgoodwill.com/viewItem.asp?',
@@ -156,10 +156,12 @@ exports.viewAuction = function(req, res){
 				el: "Title",
 				ev: item.title,
 				dp: req.originalUrl
-			}
+			};
 			visitor.event(paramsTitle, function (err) {
-				console.log("Error: Unable to track the title.");
-				console.log(err);
+				if(err){
+					console.log("Error: Unable to track the title.");
+					console.log(err);
+				}
 			});
 			var paramsPrice = {
 				ec: "Auction",
@@ -167,13 +169,15 @@ exports.viewAuction = function(req, res){
 				el: "Price",
 				ev: item.price,
 				dp: req.originalUrl
-			}
+			};
 			visitor.event(paramsPrice, function (err) {
-				console.log("Error: Unable to track the price.");
-				console.log(err);
+				if(err){
+					console.log("Error: Unable to track the price.");
+					console.log(err);
+				}
 			});
 			sendJSON();
-		}; // end else
+		} // end else
 	}; // end scrapeItems
 
   var getImageSize = function() {
@@ -187,7 +191,7 @@ exports.viewAuction = function(req, res){
         getImage.abort();
       }); // end imagesize
     }); // end getImage
-  }
+  };
 
   var sendJSON = function() {
 		var items = {};
@@ -216,4 +220,4 @@ exports.viewAuction = function(req, res){
     }
   });
 
-}
+};
