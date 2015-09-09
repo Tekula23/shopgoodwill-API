@@ -66,31 +66,22 @@ exports.listHotAuctions = function(req, res){
 			var itemTD = $(el).children('td');
 			var itemDIV = $(el).children('td').children('div');
 			auction.id = itemTH.eq(0).html().trim();
-			console.log("item id: " + auction.id);
 			auction.title = itemTD.eq(0).children('a').html();
 			auction.title = auction.title.replace(/(\r\n|\n|\r)/gm," ");
 			auction.title = auction.title.replace(/(~)/gim,"");
 			auction.title = auction.title.replace(/(�)/gim," ");
 			auction.title = entities.decode(auction.title);
-			console.log("item title: " + auction.title);
 			auction.url = itemTD.eq(0).children('a').attr('href');
-			console.log("item url: " + auction.url);
 			auction.thumbnail = itemDIV.eq(0).children('img').attr('src');
 			auction.img = auction.thumbnail.replace("-thumb","");
-			console.log("item image: " + auction.img);
 			auction.price = itemTD.eq(1).find('b').html();
 			auction.price = auction.price.replace("$","");
-			console.log("item price: " + auction.price);
 			auction.bids = itemTD.eq(2).html();
-			console.log("item bids: " + auction.bids);
 			auction.views = itemTD.eq(3).html();
-			console.log("item views: " + auction.views);
 			auction.end = itemTD.eq(4).html();
 			auction.end = moment(auction.end, 'M/D/YYYY h:m:s a').fromNow();
-			console.log("item end: " + auction.end);
 			auctionsArray.push(auction);
 			if(itemRows.length === i+1) {
-				console.log("sending JSON");
 				sendJSON();
 			}
 		}); // end itemRows.each

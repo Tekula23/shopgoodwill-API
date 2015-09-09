@@ -28,7 +28,6 @@ exports.viewAuction = function(req, res){
     id: queryId,
     get full () {
 			itemURL = this.base + 'itemID=' + this.id;
-			console.log("Final URL to parse: " + itemURL);
       return itemURL;
     }
   };
@@ -55,7 +54,6 @@ exports.viewAuction = function(req, res){
 
     // iterate over rows and pull out available data
     if (itemCols.length < 1) {
-      console.log("less than");
       res.status(204).send({ error: "There was an issue finding the item details." });
     } else {
 
@@ -81,16 +79,13 @@ exports.viewAuction = function(req, res){
 			item.img = item.img.replace("-thumb","");
 			if(secondCol.eq(2).html()){
       	item.quanitity = secondCol.eq(2).html().trim();
-				console.log("item.quanitity: " + item.quanitity);
 			}
 
 			if(secondCol.eq(3).html()){
       	item.start = moment(secondCol.eq(3).html().trim(),'M/D/YYYY h:m:s a').fromNow();
-				console.log("item.start: " + item.start);
 			}
 			if(secondCol.eq(4).html()){
       	item.end = moment(secondCol.eq(4).html().trim(),'M/D/YYYY h:m:s a').fromNow();
-				console.log("item.end: " + item.end);
 			}
 			if(secondCol.eq(5).html()){
 				item.seller = secondCol.eq(5).html().trim();
@@ -98,11 +93,9 @@ exports.viewAuction = function(req, res){
 				item.seller = item.seller.replace(/(We'd like your feedback on this seller\.)/gim, '');
       	item.seller = item.seller.replace(/(<a.*>|<\/a>)/gim,'').trim();
       	item.seller = item.seller.replace(/(<b>|<\/b>)/gim,'').trim();
-				console.log("item.seller: " + item.seller);
 			}
 			if(secondCol.eq(6).text()){
       	item.location = secondCol.eq(6).text().trim();
-				console.log("item.location: " + item.location);
 			}
 			if(secondCol.eq(7).html()){
       	item.payment = secondCol.eq(7).text().trim();
@@ -114,7 +107,6 @@ exports.viewAuction = function(req, res){
       	// item.payment = item.payment.replace(/(<b>|<\/b>)/gim,'').trim();
       	// item.payment = item.payment.replace(/(<em>|<\/em>)/gim,'').trim();
       	// item.payment = item.payment.replace(/(&nbsp;)/gim,'').trim();
-				console.log("item.payment: " + item.payment);
 			}
 			if(secondCol.eq(8).html()){
       	item.shipping = secondCol.eq(8).text().trim();
@@ -123,13 +115,11 @@ exports.viewAuction = function(req, res){
       	item.shipping = item.shipping.replace(/(<b>|<\/b>)/gim,'').trim();
       	item.shipping = item.shipping.replace(/(<em>|<\/em>)/gim,'').trim();
       	item.shipping = item.shipping.replace(/(&nbsp;)/gim,'').trim();
-				console.log("item.shipping: " + item.shipping);
 			}
 			if(secondCol.eq(9).html()){
       	item.returnPolicy = secondCol.eq(9).text().trim();
 				item.returnPolicy = item.returnPolicy.replace(/(&nbsp;)/gim,'').trim();
 				item.returnPolicy = item.returnPolicy.replace(/(\r\n|\n|\r|<br>)/gm, ' ');
-				console.log("item.returnPolicy: " + item.returnPolicy);
 			}
 			if(secondCol.eq(10).html()){
 				item.highBidder = secondCol.eq(10).html().trim();
@@ -137,7 +127,6 @@ exports.viewAuction = function(req, res){
 				item.highBidder = item.highBidder.replace(/(&nbsp;)/gim,'').trim();
 				item.highBidder = item.highBidder.replace(/(\s\s|\t)/gm, ' ');
 				item.highBidder = item.highBidder.replace(/<b>(.*)<\/b>.*/, '$1');
-				console.log("item.highBidder: " + item.highBidder);
 			}
 			if(secondCol.eq(11).html()){
 				item.bids = secondCol.eq(11).text().trim();
@@ -148,7 +137,6 @@ exports.viewAuction = function(req, res){
 				if(typeof item.bids === 'undefined' || item.bids < 0){
 					item.bids = 0;
 				}
-				console.log("item.bids: " + item.bids);
 			}
 			var paramsTitle = {
 				ec: "Auction",
