@@ -104,6 +104,7 @@ exports.listAuctions = function(req, res){
     if (itemRows.length < 1) {
       console.log("search: itemRows.length < 1");
       //res.status(204).send({ error: "looks like this isn't a real page. I mean don't get me wrong. It's there, but there's no table on the page." });
+      searchResults.results.push({message: "No results found."});
       sendJSON();
     }
     else {
