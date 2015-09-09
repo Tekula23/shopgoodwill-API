@@ -4,11 +4,12 @@ var app			= express();
 var port		= process.env.PORT || 5000;
 var os			= require('os');
 var ua 			= require('universal-analytics');
-var visitor = ua(process.env.GA_UA, {https: true});
 var nr 			= require('newrelic');
+var visitor = undefined;
 
 app.listen(port, function() {
 	console.log("Listening on " + port)
+	visitor = ua(process.env.GA_UA);
 });
 
 app.all("/*", function(req, res, next){

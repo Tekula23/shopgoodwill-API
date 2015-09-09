@@ -6,7 +6,6 @@ var url       = require('url');
 var http      = require('http');
 var ua 				= require('universal-analytics');
 var Entities 		= require('html-entities').AllHtmlEntities;
-var visitor 	= ua(process.env.GA_UA, {https: true});
 
 // var sizeOf    = require('image-size');
 // var imagesize = require('imagesize');
@@ -15,6 +14,7 @@ exports.viewAuction = function(req, res){
 	var item = {};
   var queryId = "";
 	var itemURL = "";
+	var visitor = ua(process.env.GA_UA);
 
   if(req.query.id) {
     queryId = req.query.id;

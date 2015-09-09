@@ -6,9 +6,10 @@ var Entities 			= require('html-entities').AllHtmlEntities;
 var searchUrl 		= "http://www.shopgoodwill.com/";
 var changeCase 		= require('change-case');
 var ua 						= require('universal-analytics');
-var visitor 			= ua(process.env.GA_UA, {https: true});
 
 exports.listFeatured = function(req, res){
+
+	var visitor	= ua(process.env.GA_UA);
 
 	request(searchUrl, function(err, resp, body) {
 		if(!err) {

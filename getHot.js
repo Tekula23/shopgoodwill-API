@@ -6,7 +6,6 @@ var url		 		= require('url');
 var http			= require('http');
 var ua 				= require('universal-analytics');
 var Entities 		= require('html-entities').AllHtmlEntities;
-var visitor 	= ua(process.env.GA_UA, {https: true});
 
 // var sizeOf	 = require('image-size');
 // var imagesize = require('imagesize');
@@ -17,6 +16,7 @@ exports.listHotAuctions = function(req, res){
 	var querySeller = "12";
 	var queryPage = 1;
 	var queryTerm = "";
+	var visitor = ua(process.env.GA_UA);
 
 	if(req.query.page) {
 		queryPage = req.query.page;

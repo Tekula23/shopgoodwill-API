@@ -6,7 +6,6 @@ var url       = require('url');
 var http      = require('http');
 var changeCase = require('change-case');
 var ua 				= require('universal-analytics');
-var visitor 	= ua(process.env.GA_UA, {https: true});
 
 // var sizeOf    = require('image-size');
 // var imagesize = require('imagesize');
@@ -23,6 +22,7 @@ exports.listAuctions = function(req, res){
   var queryPage = 1;
   var queryTerm = "";
   var querySortBy = "itemEndTime";
+  var visitor = ua(process.env.GA_UA);
 
   if(req.query.page) {
     queryPage = req.query.page;

@@ -3,11 +3,11 @@ var request      = require('request');
 var tidy         = require('htmltidy').tidy;
 var searchUrl    = "http://www.shopgoodwill.com/search/";
 var ua 				   = require('universal-analytics');
-var visitor 	   = ua(process.env.GA_UA, {https: true});
 
 exports.listSellers = function(req, res){
 
   var sellersArray = [];
+  var visitor = ua(process.env.GA_UA);
 
   request(searchUrl, function(err, resp, body) {
     if(!err) {

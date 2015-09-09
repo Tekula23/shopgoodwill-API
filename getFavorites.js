@@ -2,13 +2,14 @@ var cheerio   = require('cheerio');
 var request   = require('request');
 var tidy      = require('htmltidy').tidy;
 var ua 				= require('universal-analytics');
-var visitor 	= ua(process.env.GA_UA, {https: true});
 
 exports.listFavorites = function(req, res){
   // !!! I LOST MY GROOVE MO FO BOTHERING ME !!!
   var favorites = req.query.auctions;
   var favoritesArray = favorites.split(',');
   var auctionsArray = [];
+  var visitor = ua(process.env.GA_UA);
+
   // http://www.shopgoodwill.com/listings/listByCat.asp?catID=339&ending=EndingToday
   // http://www.shopgoodwill.com/viewItem.asp?itemID=16775635
   favoritesArray.forEach(function(i, e){

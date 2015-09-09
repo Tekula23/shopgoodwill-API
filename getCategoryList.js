@@ -6,13 +6,13 @@ var Entities 		= require('html-entities').AllHtmlEntities;
 var searchUrl 	= "http://www.shopgoodwill.com/search/";
 var ua 					= require('universal-analytics');
 var _						= require('lodash');
-var visitor 		= ua(process.env.GA_UA, {https: true});
 var fs 					= require('fs');
 
 exports.listCategories = function(req, res){
 
 	var page = 1;
 	var queryCat, catList;
+	var visitor = ua(process.env.GA_UA);
 
 	if(req.params.catId) {
 		queryCat = req.params.catId;

@@ -5,7 +5,6 @@ var moment    = require('moment');
 var url       = require('url');
 var http      = require('http');
 var ua 				= require('universal-analytics');
-var visitor 	= ua(process.env.GA_UA, {https: true});
 
 // var sizeOf    = require('image-size');
 // var imagesize = require('imagesize');
@@ -15,6 +14,7 @@ exports.viewItem = function(req, res){
   var queryTitle = "";
   var queryId = "";
 	var itemURL = "";
+	var visitor 	= ua(process.env.GA_UA);
 
 
   var url = {
