@@ -7,9 +7,11 @@ var ua 			= require('universal-analytics');
 var nr 			= require('newrelic');
 var visitor = undefined;
 
+express.use(ua.middleware(process.env.GA_UA, {cookieName: '_ga'}));
+visitor = ua.createFromSession(socket.handshake.session);
+
 app.listen(port, function() {
 	console.log("Listening on " + port)
-	visitor = ua(process.env.GA_UA);
 });
 
 app.all("/*", function(req, res, next){
@@ -17,6 +19,8 @@ app.all("/*", function(req, res, next){
 	res.header("Access-Control-Allow-Headers", "Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With");
 	res.header("Access-Control-Allow-Methods", "GET, PUT, POST");
 	visitor.pageview(req.originalUrl).send();
+	console.log("--- UA: Visitor ---");
+	console.log(visitor.ua(process.env.GA_UA).debug());
 	return next();
 });
 
