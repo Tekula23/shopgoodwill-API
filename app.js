@@ -1,5 +1,3 @@
-var common 	= require('./config/common');
-var config 	= common.config();
 var express	= require('express');
 var path		= require('path');
 var app			= express();
@@ -8,7 +6,7 @@ var os			= require('os');
 var ua 			= require('universal-analytics');
 var nr 			= require('newrelic');
 var socket 	= require('socket.io');
-var visitor = ua(process.env.GA_UA || config.GA_UA);
+var visitor = ua(process.env.GA_UA);
 
 app.listen(port, function() {
 	console.log("Listening on " + port);
