@@ -1,3 +1,6 @@
+var common 	= require('./config/common');
+var siteConfig 	= common.config();
+
 /**
  * New Relic agent configuration.
  *
@@ -8,11 +11,11 @@ exports.config = {
   /**
    * Array of application names.
    */
-  app_name: [process.env.NEW_RELIC_APP_NAME],
+  app_name: [process.env.NEW_RELIC_APP_NAME || siteConfig.NEW_RELIC_LICENSE_KEY],
   /**
    * Your New Relic license key.
    */
-  license_key: process.env.NEW_RELIC_LICENSE_KEY,
+  license_key: process.env.NEW_RELIC_LICENSE_KEY || siteConfig.NEW_RELIC_LICENSE_KEY,
   logging: {
     /**
      * Level at which to log. 'trace' is most useful to New Relic when diagnosing
@@ -21,4 +24,4 @@ exports.config = {
      */
     level: 'info'
   }
-}
+};

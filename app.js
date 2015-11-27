@@ -1,3 +1,5 @@
+var common 	= require('./config/common');
+var config 	= common.config();
 var express	= require('express');
 var path		= require('path');
 var app			= express();
@@ -6,8 +8,7 @@ var os			= require('os');
 var ua 			= require('universal-analytics');
 var nr 			= require('newrelic');
 var socket 	= require('socket.io');
-var visitor = ua(process.env.GA_UA);
-
+var visitor = ua(process.env.GA_UA || config.GA_UA);
 
 app.listen(port, function() {
 	console.log("Listening on " + port);
@@ -23,16 +24,16 @@ app.all("/*", function(req, res, next){
 	return next();
 });
 
-var getHot  				= require('./getHot.js');
-var getSellers			= require('./getSellers.js');
-var getCategories		= require('./getCategories.js');
-var getCategoryList	= require('./getCategoryList.js');
-var getFeatured			= require('./getFeatured.js');
-var getAuctions			= require('./getAuctions.js');
-var getAuction			= require('./getAuction.js');
-var getGallery			= require('./getAuctionGallery.js');
-var search					= require('./search.js');
-var getFavorites		= require('./getFavorites.js');
+var getHot  				= require('./routes/getHot.js');
+var getSellers			= require('./routes/getSellers.js');
+var getCategories		= require('./routes/getCategories.js');
+var getCategoryList	= require('./routes/getCategoryList.js');
+var getFeatured			= require('./routes/getFeatured.js');
+var getAuctions			= require('./routes/getAuctions.js');
+var getAuction			= require('./routes/getAuction.js');
+var getGallery			= require('./routes/getAuctionGallery.js');
+var search					= require('./routes/search.js');
+var getFavorites		= require('./routes/getFavorites.js');
 
 app.get('/hot', getHot.listHotAuctions);
 app.get('/categories', getCategories.listCategories);

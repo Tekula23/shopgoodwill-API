@@ -64,10 +64,11 @@ exports.viewAuction = function(req, res){
 			item.id = parseInt(secondCol.eq(1).html().trim());
 			itemTitle = itemTitle.replace(/(\r\n|\n|\r)/gm," ");
 			itemTitle = itemTitle.replace(/(~)/gim,"");
-			itemTitle = itemTitle.replace(/(�)/gim," ");
+			itemTitle = itemTitle.replace(/(�)/gim,"&nbsp;");
 			item.title = itemTitle;
 			item.title = entities.decode(item.title);
-			item.price = parseFloat($('[itemprop="price"]').text().trim().replace(/(&nbsp;|\$)/gim,'')).toFixed(2);
+			// item.price = parseFloat($('[itemprop="price"]').text().trim().replace(/(&nbsp;|\$)/gim,'')).toFixed(2);
+			item.price = $('[itemprop="price"]').text();
 			item.description = $('[itemprop="description"]').text().trim().replace(/&nbsp;/gim,'');
 			item.description = item.description.replace(/description:|Description:/,'').trim();
 			item.url = itemURL;
@@ -154,6 +155,8 @@ exports.viewAuction = function(req, res){
 					item.bids = 0;
 				}
 			}
+
+			//Analytics
 			var paramsTitle = {
 				ec: "Auction",
 				ea: "getAction",
@@ -163,8 +166,8 @@ exports.viewAuction = function(req, res){
 			};
 			visitor.event(paramsTitle, function (err) {
 				if(err){
-					console.log("Error: Unable to track the title.");
-					console.log(err);
+					console.error("Error: Unable to track the title.");
+					console.error(err);
 				}
 			});
 			var paramsPrice = {
@@ -176,10 +179,13 @@ exports.viewAuction = function(req, res){
 			};
 			visitor.event(paramsPrice, function (err) {
 				if(err){
-					console.log("Error: Unable to track the price.");
-					console.log(err);
+					console.error("Error: Unable to track the price.");
+					console.error(err);
 				}
 			});
+			//End analytics
+
+			//Process the request
 			sendJSON();
 		} // end else
 	}; // end scrapeItems
@@ -187,7 +193,9 @@ exports.viewAuction = function(req, res){
 	var getImageSize = function() {
 		var getImage = http.get(auction.itemImage, function (response) {
 			imagesize(response, function (err, result) {
-				if(err) console.log(err);
+				if(err) {
+					console.error(err);
+				}
 				auction.itemH = result.height;
 				auction.itemW = result.width;
 				auction.imageRatio = result.height/result.width;
@@ -214,9 +222,17 @@ exports.viewAuction = function(req, res){
 		});
 	};
 
+	/**
+   * Helper to change clothes sizes toUpperCase that were changed via change-case.
+   * @param str
+   */
+  var updateSizes = function(str){
+    return str.replace(/(XXL|XL|LRG|XXXL|SML|MED|NWT)/gi, function(a, l) { return l.toUpperCase(); });
+  };
+
 	request(url.full, function(error, response, body) {
 		if(error) {
-			console.log(error);
+			console.error(error);
 			res.jsonp(error);
 		} else {
 			// console.log("Dirty HTML received");

@@ -31,3 +31,5 @@ bower_components
 
 Local environment variables for Heroku
 .env
+process.env
+env.json
