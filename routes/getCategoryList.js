@@ -16,15 +16,15 @@ exports.listCategories = function(req, res){
 
 	if(req.params.catId) {
 		queryCat = req.params.catId;
-	};
+	}
 
 	if(req.query.catId) {
 		queryCat = req.query.catId;
-	};
+	}
 
 	if(req.query.page) {
 		page = req.query.page;
-	};
+	}
 
 
  /**
