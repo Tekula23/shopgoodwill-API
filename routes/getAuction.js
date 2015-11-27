@@ -67,8 +67,9 @@ exports.viewAuction = function(req, res){
 			itemTitle = itemTitle.replace(/(�)/gim,"&nbsp;");
 			item.title = itemTitle;
 			item.title = entities.decode(item.title);
-			// item.price = parseFloat($('[itemprop="price"]').text().trim().replace(/(&nbsp;|\$)/gim,'')).toFixed(2);
-			item.price = $('[itemprop="price"]').text();
+			item.title = updateSizes(item.title);
+			item.price = $('[itemprop="price"]').text().trim().replace(/(&nbsp;|\$)/gim,'');
+			// item.price = $('[itemprop="price"]').text();
 			item.description = $('[itemprop="description"]').text().trim().replace(/&nbsp;/gim,'');
 			item.description = item.description.replace(/description:|Description:/,'').trim();
 			item.url = itemURL;
