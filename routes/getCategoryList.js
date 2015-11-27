@@ -12,19 +12,19 @@ exports.listCategories = function(req, res){
 
 	var page = 1;
 	var queryCat, catList;
-	var visitor = ua(process.env.GA_UA);
+	var visitor 		= ua(process.env.GA_UA);
 
 	if(req.params.catId) {
 		queryCat = req.params.catId;
-	}
+	};
 
 	if(req.query.catId) {
 		queryCat = req.query.catId;
-	}
+	};
 
 	if(req.query.page) {
 		page = req.query.page;
-	}
+	};
 
 
  /**
