@@ -67,13 +67,13 @@ exports.viewAuction = function(req, res){
 			item.id = parseInt(secondCol.eq(1).html().trim());
 			itemTitle = itemTitle.replace(/(\r\n|\n|\r)/gm," ");
 			itemTitle = itemTitle.replace(/(~)/gim,"");
-			itemTitle = itemTitle.replace(/(�)/gim,"&nbsp;");
+			itemTitle = itemTitle.replace(/(�)/gim," ");
 			item.title = itemTitle;
 			item.title = entities.decode(item.title);
 			item.title = updateSizes(item.title);
-			item.price = $('[itemprop="price"]').text().trim().replace(/(&nbsp;|\$)/gim,'');
+			item.price = $('[itemprop="price"]').text().trim().replace(/(&nbsp;|\$)/gim,' ');
 			// item.price = $('[itemprop="price"]').text();
-			item.description = $('[itemprop="description"]').text().trim().replace(/&nbsp;/gim,'');
+			item.description = $('[itemprop="description"]').text().trim().replace(/&nbsp;/gim,' ');
 			item.description = item.description.replace(/description:|Description:/,'').trim();
 			item.url = itemURL;
 			if(!item.id){
@@ -142,7 +142,7 @@ exports.viewAuction = function(req, res){
 				// item.payment = item.payment.replace(/(<a.*>|<\/a>)/gim,'').trim();
 				// item.payment = item.payment.replace(/(<b>|<\/b>)/gim,'').trim();
 				// item.payment = item.payment.replace(/(<em>|<\/em>)/gim,'').trim();
-				// item.payment = item.payment.replace(/(&nbsp;)/gim,'').trim();
+				// item.payment = item.payment.replace(/(&nbsp;)/gim,' ').trim();
 			}
 			if(secondCol.eq(8).html()){
 				item.shipping = secondCol.eq(8).text().trim();
@@ -150,24 +150,24 @@ exports.viewAuction = function(req, res){
 				item.shipping = item.shipping.replace(/(<a.*>|<\/a>)/gim,'').trim();
 				item.shipping = item.shipping.replace(/(<b>|<\/b>)/gim,'').trim();
 				item.shipping = item.shipping.replace(/(<em>|<\/em>)/gim,'').trim();
-				item.shipping = item.shipping.replace(/(&nbsp;)/gim,'').trim();
+				item.shipping = item.shipping.replace(/(&nbsp;)/gim,' ').trim();
 			}
 			if(secondCol.eq(9).html()){
 				item.returnPolicy = secondCol.eq(9).text().trim();
-				item.returnPolicy = item.returnPolicy.replace(/(&nbsp;)/gim,'').trim();
+				item.returnPolicy = item.returnPolicy.replace(/(&nbsp;)/gim,' ').trim();
 				item.returnPolicy = item.returnPolicy.replace(/(\r\n|\n|\r|<br>)/gm, ' ');
 			}
 			if(secondCol.eq(10).html()){
 				item.highBidder = secondCol.eq(10).html().trim();
 				item.highBidder = item.highBidder.replace(/(\r\n|\n|\r|<br>)/gm, ' ');
-				item.highBidder = item.highBidder.replace(/(&nbsp;)/gim,'').trim();
+				item.highBidder = item.highBidder.replace(/(&nbsp;)/gim,' ').trim();
 				item.highBidder = item.highBidder.replace(/(\s\s|\t)/gm, ' ');
 				item.highBidder = item.highBidder.replace(/<b>(.*)<\/b>.*/, '$1');
 			}
 			if(secondCol.eq(11).html()){
 				item.bids = secondCol.eq(11).text().trim();
 				item.bids = item.bids.replace(/(\r\n|\n|\r|<br>)/gm, ' ');
-				item.bids = item.bids.replace(/(&nbsp;)/gim,'').trim();
+				item.bids = item.bids.replace(/(&nbsp;)/gim,' ').trim();
 				item.bids = item.bids.replace(/(\s\s|\t)/gm, ' ');
 				item.bids = parseInt(item.bids.replace(/\(.*\)/, '').trim());
 				if(typeof item.bids === 'undefined' || item.bids < 0){
