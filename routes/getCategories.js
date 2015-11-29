@@ -11,7 +11,7 @@ var _						= require('lodash');
 exports.listCategories = function(req, res){
 
 	var page = 1;
-	var queryCat = undefined;
+	var queryCat = '';
 	var visitor = ua(process.env.GA_UA);
 
 	if(req.params.catId) {

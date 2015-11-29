@@ -1,7 +1,7 @@
 var cheerio   = require('cheerio');
 var request   = require('request');
 var tidy      = require('htmltidy').tidy;
-var moment    = require('moment');
+var moment 		= require('moment-timezone');
 var url       = require('url');
 var http      = require('http');
 var ua 				= require('universal-analytics');
@@ -20,6 +20,9 @@ exports.listAuctions = function(req, res){
   var querySeller = "all";
   var queryPage = 1;
   var queryTerm = "";
+  
+  //Set default timezone
+  moment.tz.setDefault("America/Los_Angeles");
 
   var perPageTotal = 25;
 

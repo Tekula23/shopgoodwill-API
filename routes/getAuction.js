@@ -1,11 +1,11 @@
-var cheerio	 = require('cheerio');
-var request	 = require('request');
-var tidy	= require('htmltidy').tidy;
-var moment = require('moment-timezone');
-var url	 = require('url');
-var http	= require('http');
+var cheerio	 	= require('cheerio');
+var request	 	= require('request');
+var tidy			= require('htmltidy').tidy;
+var moment 		= require('moment-timezone');
+var url	 			= require('url');
+var http			= require('http');
 var ua 				= require('universal-analytics');
-var Entities 		= require('html-entities').AllHtmlEntities;
+var Entities 	= require('html-entities').AllHtmlEntities;
 
 // var sizeOf	= require('image-size');
 // var imagesize = require('imagesize');
@@ -102,12 +102,21 @@ exports.viewAuction = function(req, res){
 				});
 			}
 
-			if(secondCol.eq(3).html()){
-				item.start = moment(secondCol.eq(3).html().trim(),'M/D/YYYY h:m:s a').fromNow();
+			item.start = secondCol.eq(3).text();
+			if(item.start.indexOf('in') === -1){
+				var tStart = moment(item.start, 'M/D/YYYY h:m:s a').fromNow();
+				item.start = tStart;
+			} else {
+				item.start = item.start.replace(/PT/gim,'');
 			}
-			if(secondCol.eq(4).html()){
-				item.end = moment(secondCol.eq(4).html().trim(),'M/D/YYYY h:m:s a').fromNow();
+			item.end = secondCol.eq(4).text();
+			if(item.end.indexOf('in') === -1){
+				var tEnd = moment(item.end, 'M/D/YYYY h:m:s a').fromNow();
+				item.end = tEnd;
+			} else {
+				item.end = item.end.replace(/PT/gim,'');
 			}
+
 			if(secondCol.eq(5).html()){
 				item.seller = secondCol.eq(5).html().trim();
 				item.seller = item.seller.replace(/(\r\n|\n|\r|<br>)/gim, '');
