@@ -82,8 +82,8 @@ exports.listHotAuctions = function(req, res){
 			auction.price = auction.price.replace("$","");
 			auction.bids = itemTD.eq(2).html();
 			auction.views = itemTD.eq(3).html();
-			auction.end = itemTD.eq(4).html();
-			auction.end = moment(auction.end, 'M/D/YYYY h:m:s a').fromNow();
+			auction.end = itemTD.eq(4).text();
+			// auction.end = moment(auction.end, 'M/D/YYYY h:m:s a').fromNow();
 			auctionsArray.push(auction);
 			if(itemRows.length === i+1) {
 				sendJSON();
