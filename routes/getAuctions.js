@@ -137,12 +137,12 @@ exports.listAuctions = function(req, res){
         auction.price = auction.price.replace("$","");
         auction.bids = parseInt(itemTH.eq(3).text());
         auction.end = itemTH.eq(4).text();
-        if(auction.end.indexOf('in') === -1){
-          tEnd = moment(auction.end, 'M/D/YYYY h:m:s a').fromNow();
-          auction.end = tEnd;
-        } else {
-          auction.end = auction.end.replace(/PT/gim,'');
-        }
+        // if(auction.end.indexOf('in') === -1){
+        //   tEnd = moment(auction.end, 'M/D/YYYY h:m:s a').fromNow();
+        //   auction.end = tEnd;
+        // } else {
+        //   auction.end = auction.end.replace(/PT/gim,'');
+        // }
         searchResults.results.push(auction);
         if(itemRows.length === i+1) {
           // console.log("sending JSON");

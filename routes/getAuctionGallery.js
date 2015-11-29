@@ -19,7 +19,6 @@ exports.viewItem = function(req, res){
 	//Set default timezone
 	moment.tz.setDefault("America/Los_Angeles");
 
-
   var url = {
     base:   'http://www.shopgoodwill.com',
     get full () {
