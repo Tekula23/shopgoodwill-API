@@ -84,7 +84,13 @@ exports.listHotAuctions = function(req, res){
 			auction.views = itemTD.eq(3).html();
 			auction.end = itemTD.eq(4).text();
 			auction.endDate = itemTD.eq(4).text();
-			// auction.end = moment(auction.end, 'M/D/YYYY h:m:s a').fromNow();
+			auction.end = auction.end.replace(/PT/gim,'');
+			if(auction.end.indexOf('in') === -1){
+				var tEnd = moment(auction.end, 'MM/DD/YYYY hh:mm:ss a').fromNow();
+				auction.end = tEnd;
+			} else {
+				auction.end = auction.end.replace(/PT/gim,'');
+			}
 			auctionsArray.push(auction);
 			if(itemRows.length === i+1) {
 				sendJSON();
