@@ -83,6 +83,7 @@ exports.listHotAuctions = function(req, res){
 			auction.bids = itemTD.eq(2).html();
 			auction.views = itemTD.eq(3).html();
 			auction.end = itemTD.eq(4).text();
+			auction.endDate = itemTD.eq(4).text();
 			// auction.end = moment(auction.end, 'M/D/YYYY h:m:s a').fromNow();
 			auctionsArray.push(auction);
 			if(itemRows.length === i+1) {

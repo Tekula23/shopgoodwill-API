@@ -103,19 +103,25 @@ exports.viewAuction = function(req, res){
 			}
 
 			item.start = secondCol.eq(3).text();
-			// if(item.start.indexOf('in') === -1){
-			// 	var tStart = moment(item.start, 'M/D/YYYY h:m:s a').fromNow();
-			// 	item.start = tStart;
-			// } else {
-			// 	item.start = item.start.replace(/PT/gim,'');
-			// }
+			item.startDate = secondCol.eq(3).text();
+			item.start = item.start.replace(/PT/gim,'');
+			// item.start = moment(item.start);
+			if(item.start.indexOf('in') === -1){
+				var tStart = moment(item.start, 'MM/DD/YYYY hh:mm:ss a').fromNow();
+				item.start = tStart;
+			} else {
+				item.start = item.start.replace(/PT/gim,'');
+			}
+			item.endDate = secondCol.eq(4).text();
 			item.end = secondCol.eq(4).text();
-			// if(item.end.indexOf('in') === -1){
-			// 	var tEnd = moment(item.end, 'M/D/YYYY h:m:s a').fromNow();
-			// 	item.end = tEnd;
-			// } else {
-			// 	item.end = item.end.replace(/PT/gim,'');
-			// }
+			item.end = item.end.replace(/PT/gim,'');
+			// item.end = moment(item.end);
+			if(item.end.indexOf('in') === -1){
+				var tEnd = moment(item.end, 'MM/DD/YYYY hh:mm:ss a').fromNow();
+				item.end = tEnd;
+			} else {
+				item.end = item.end.replace(/PT/gim,'');
+			}
 
 			if(secondCol.eq(5).html()){
 				item.seller = secondCol.eq(5).html().trim();
