@@ -22,16 +22,16 @@ app.all("/*", function(req, res, next){
 	return next();
 });
 
-var getHot  				= require('./routes/getHot.js');
-var getSellers			= require('./routes/getSellers.js');
-var getCategories		= require('./routes/getCategories.js');
-var getCategoryList	= require('./routes/getCategoryList.js');
-var getFeatured			= require('./routes/getFeatured.js');
-var getAuctions			= require('./routes/getAuctions.js');
-var getAuction			= require('./routes/getAuction.js');
-var getGallery			= require('./routes/getAuctionGallery.js');
-var search					= require('./routes/search.js');
-var getFavorites		= require('./routes/getFavorites.js');
+var getHot  				= require('./www/getHot.js');
+var getSellers			= require('./www/getSellers.js');
+var getCategories		= require('./www/getCategories.js');
+var getCategoryList	= require('./www/getCategoryList.js');
+var getFeatured			= require('./www/getFeatured.js');
+var getAuctions			= require('./www/getAuctions.js');
+var getAuction			= require('./www/getAuction.js');
+var getGallery			= require('./www/getAuctionGallery.js');
+var search					= require('./www/search.js');
+var getFavorites		= require('./www/getFavorites.js');
 
 app.get('/hot', getHot.listHotAuctions);
 app.get('/categories', getCategories.listCategories);
