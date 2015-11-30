@@ -84,7 +84,7 @@ exports.listAuctions = function(req, res){
       totalSearchResults = totalSearchResults.replace(/([0-9]+).*/gi,'$1');
 
       //Add the total search results
-      searchResults.total = totalSearchResults;
+      searchResults.total = parseInt(totalSearchResults);
       searchResults.totalPerPage = perPageTotal;
 
       //Add paging details
