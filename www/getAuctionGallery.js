@@ -50,7 +50,7 @@ exports.viewItem = function(req, res){
       res.status(204).send({ error: "There was an issue finding the gallery item." });
     } else {
 
-			item.title = $(galleryItem).children('b').first().html().trim();
+			item.title = $(galleryItem).children('b').first().text().trim();
 			item.title = tools.cleanTitle(item.title);
 			item.url = url.base + $(galleryItem).children('a').first().attr('href');//.replace(/\/auctions\//gi,'');
 			item.img = $(galleryItem).children('a').children('img').first().attr('src');
