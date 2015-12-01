@@ -1,11 +1,11 @@
-var cheerio	 	= require('cheerio');
-var request	 	= require('request');
-var tidy			= require('htmltidy').tidy;
-var moment 		= require('moment-timezone');
-var url	 			= require('url');
-var http			= require('http');
-var ua 				= require('universal-analytics');
-var Entities 	= require('html-entities').AllHtmlEntities;
+var cheerio	 		= require('cheerio');
+var request	 		= require('request');
+var tidy				= require('htmltidy').tidy;
+var moment 			= require('moment-timezone');
+var url	 				= require('url');
+var http				= require('http');
+var ua 					= require('universal-analytics');
+var tools				= require('./tools');
 
 // var sizeOf	= require('image-size');
 // var imagesize = require('imagesize');
@@ -35,25 +35,13 @@ exports.viewAuction = function(req, res){
 		}
 	};
 
-	/**
-	 * sanitize
-	 * Helper method that sanitizes/converts the auction title to one used on shopgoodwill.com. See example below.
-	 * ex. http://www.shopgoodwill.com/auctions/King-James-Version-Paperback-New-Testament-23794420.html
-	 * @param str
-	 */
-	var sanitize = function(str){
-		str = str.replace(/[^\w-]/g, '-');
-		return str;
-	};
-
 	var scrapeItems = function(html) {
-		//console.log(html);
-		var $ = cheerio.load(html);
-		// get a cheerio object array of the table rows
-		var itemTitle = $('div.itemdetail h1#title').children('span').text();
-		var itemCols = $('div.itemdetail').children('div').children('div');
 
-		entities = new Entities();
+		//console.log(html);
+		var $ = cheerio.load(html, { decodeEntities: true });
+		// get a cheerio object array of the table rows
+		var itemTitle = $('div.itemdetail h1#title').children('span').html();
+		var itemCols = $('div.itemdetail').children('div').children('div');
 
 		// iterate over rows and pull out available data
 		if (itemCols.length < 1) {
@@ -65,13 +53,9 @@ exports.viewAuction = function(req, res){
 			var thirdCol = itemCols.eq(2).children('table').children('tr'); //bidding content
 			//console.log(thirdCol);
 			item.id = parseInt(secondCol.eq(1).html().trim());
-			itemTitle = itemTitle.replace(/(\r\n|\n|\r)/gm," ");
-			itemTitle = itemTitle.replace(/(~)/gim,"");
-			itemTitle = itemTitle.replace(/(�)/gim," ");
-			item.title = itemTitle;
-			item.title = entities.decode(item.title);
-			item.title = updateSizes(item.title);
+			item.title = tools.cleanTitle(itemTitle);
 			item.price = $('[itemprop="price"]').text().trim().replace(/(&nbsp;|\$)/gim,' ');
+			item.price = item.price.trim();
 			// item.price = $('[itemprop="price"]').text();
 			item.description = $('[itemprop="description"]').text().trim().replace(/&nbsp;/gim,' ');
 			item.description = item.description.replace(/description:|Description:/,'').trim();
@@ -104,23 +88,21 @@ exports.viewAuction = function(req, res){
 
 			item.start = secondCol.eq(3).text();
 			item.startDate = secondCol.eq(3).text();
-			item.start = item.start.replace(/PT/gim,'');
 			// item.start = moment(item.start);
 			if(item.start.indexOf('in') === -1){
 				var tStart = moment(item.start, 'MM/DD/YYYY hh:mm:ss a').fromNow();
 				item.start = tStart;
 			} else {
-				item.start = item.start.replace(/PT/gim,'');
+				item.start = item.start.replace(/\sPT/gim,'');
 			}
 			item.endDate = secondCol.eq(4).text();
 			item.end = secondCol.eq(4).text();
-			item.end = item.end.replace(/PT/gim,'');
 			// item.end = moment(item.end);
 			if(item.end.indexOf('in') === -1){
 				var tEnd = moment(item.end, 'MM/DD/YYYY hh:mm:ss a').fromNow();
 				item.end = tEnd;
 			} else {
-				item.end = item.end.replace(/PT/gim,'');
+				item.end = item.end.replace(/\sPT/gim,'');
 			}
 
 			if(secondCol.eq(5).html()){
@@ -209,6 +191,9 @@ exports.viewAuction = function(req, res){
 		} // end else
 	}; // end scrapeItems
 
+	/**
+	 * getImageSize
+	 */
 	var getImageSize = function() {
 		var getImage = http.get(auction.itemImage, function (response) {
 			imagesize(response, function (err, result) {
@@ -240,14 +225,6 @@ exports.viewAuction = function(req, res){
 			}
 		});
 	};
-
-	/**
-   * Helper to change clothes sizes toUpperCase that were changed via change-case.
-   * @param str
-   */
-  var updateSizes = function(str){
-    return str.replace(/(XXL|XL|LRG|XXXL|SML|MED|NWT)/gi, function(a, l) { return l.toUpperCase(); });
-  };
 
 	request(url.full, function(error, response, body) {
 		if(error) {

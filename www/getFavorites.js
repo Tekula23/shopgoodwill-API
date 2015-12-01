@@ -2,6 +2,7 @@ var cheerio   = require('cheerio');
 var request   = require('request');
 var tidy      = require('htmltidy').tidy;
 var ua 				= require('universal-analytics');
+var tools     = require('./tools');
 
 exports.listFavorites = function(req, res){
   // !!! I LOST MY GROOVE MO FO BOTHERING ME !!!

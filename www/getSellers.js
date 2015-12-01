@@ -3,6 +3,7 @@ var request      = require('request');
 var tidy         = require('htmltidy').tidy;
 var searchUrl    = "http://www.shopgoodwill.com/search/";
 var ua 				   = require('universal-analytics');
+var tools        = require('./tools');
 
 exports.listSellers = function(req, res){
 

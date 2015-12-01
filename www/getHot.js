@@ -5,7 +5,7 @@ var moment 		= require('moment-timezone');
 var url		 		= require('url');
 var http			= require('http');
 var ua 				= require('universal-analytics');
-var Entities 		= require('html-entities').AllHtmlEntities;
+var tools			= require('./tools');
 
 // var sizeOf	 = require('image-size');
 // var imagesize = require('imagesize');
@@ -71,10 +71,7 @@ exports.listHotAuctions = function(req, res){
 			var itemDIV = $(el).children('td').children('div');
 			auction.id = itemTH.eq(0).html().trim();
 			auction.title = itemTD.eq(0).children('a').html();
-			auction.title = auction.title.replace(/(\r\n|\n|\r)/gm," ");
-			auction.title = auction.title.replace(/(~)/gim,"");
-			auction.title = auction.title.replace(/(�)/gim," ");
-			auction.title = entities.decode(auction.title);
+			auction.title = tools.cleanTitle(auction.title);
 			auction.url = itemTD.eq(0).children('a').attr('href');
 			auction.thumbnail = itemDIV.eq(0).children('img').attr('src');
 			auction.img = auction.thumbnail.replace("-thumb","");
@@ -99,6 +96,25 @@ exports.listHotAuctions = function(req, res){
 	} // end else
 	}; // end scrapeItems
 
+	/**
+   * cleanTitle
+   * Handles cleaning auction titles.
+   */
+  var cleanTitle = function(str){
+    var entities = new Entities();
+    var title = str.replace(/(\r\n|\n|\r)/gm," ");
+    title = title.replace(/(~)/gim,"");
+    title = title.replace(/(�)/gim,"–");
+    title = entities.decode(title);
+    title = updateSizes(title);
+    // title = changeCase.titleCase(title); //Messes up slashes
+    title = updateSizes(title);
+    return title;
+  };
+
+	/**
+	 * getImageSize
+	 */
 	var getImageSize = function() {
 		var getImage = http.get(auction.itemImage, function (response) {
 			imagesize(response, function (err, result) {

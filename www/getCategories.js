@@ -6,6 +6,7 @@ var Entities 		= require('html-entities').AllHtmlEntities;
 var searchUrl 	= "http://www.shopgoodwill.com/search/";
 var ua 					= require('universal-analytics');
 var _						= require('lodash');
+var tools				= require('./tools');
 
 
 exports.listCategories = function(req, res){
@@ -64,7 +65,7 @@ exports.listCategories = function(req, res){
 		var parentCat;
 		catOptions.each(function(i, el){
 			var catName = $(el).html();
-			catName = basicTitleClean(catName);
+			catName = tools.basicTitleClean(catName);
 			var catID = parseInt($(el).val());
 			switch(page){
 				case 1:
@@ -93,35 +94,6 @@ exports.listCategories = function(req, res){
 	};
 
 	/**
-	 * basicTitleClean
-	 * Handles decoding the entities in the title along with some basic clean up
-	 * @param str
-	 * @return str
-	 */
-	var basicTitleClean = function(str){
-		var entities = new Entities();
-		str = entities.decode(str);
-		str = str.replace(/and/g,'&');
-		str = str.replace(/\//g,' & ');
-		str = str.replace(/\n|\r|\n\r/g,' '); //Convert new lines to spaces
-		return str;
-	};
-
-	/**
-	 * cleanCategory
-	 * Action to help clean category titles.
-	 */
-	var cleanCategory = function(catName) {
-		var tCat = catName.toLowerCase();
-		tCat = tCat.replace(/&amp;/g,'');
-		tCat = tCat.replace(/&gt;/g,'');
-		tCat = tCat.replace(/&/g,'');
-		tCat = tCat.replace(/\//g,'');
-		tCat = tCat.replace(/ /g,'');
-		return tCat;
-	};
-
-	/**
 	 * getSubCount
 	 * Action that retrieves the number of subcategories a category has.
 	 */
@@ -132,8 +104,8 @@ exports.listCategories = function(req, res){
 			var catName = $(el).html();
 			var catID = $(el).val();
 			if(catName !== 'All Categories'){
-				tCat = cleanCategory(catName);
-				tPCat = cleanCategory(parentCategory);
+				tCat = tools.cleanCategory(catName);
+				tPCat = tools.cleanCategory(parentCategory);
 				if(tCat.indexOf(tPCat) > -1 && catName !== parentCategory){
 					total += 1;
 				}
@@ -168,7 +140,7 @@ exports.listCategories = function(req, res){
 		var tTracker = [];
 		optionList.each(function(i, el) {
 			tCatName = $(el).html();
-			tCatName = basicTitleClean(tCatName);
+			tCatName = tools.basicTitleClean(tCatName);
 			tCatID = parseInt($(el).val());
 			console.log("id: " + tCatID);
 			console.log("name: " + tCatName);
@@ -238,13 +210,13 @@ exports.listCategories = function(req, res){
 
 		catOptions.each(function(i, el){
 			var catName = $(el).html();
-			catName = basicTitleClean(catName);
+			catName = tools.basicTitleClean(catName);
 			var catID = $(el).val();
 			if(parseInt(catID) === parseInt(parentCategoryId)){
 				console.log("--- Subcategory ID:" + catID + ' ---');
 				console.log("--- Subcategory Name:" + catName + ' ---');
 
-				// tPCat = cleanCategory(parentCategoryId);
+				// tPCat = tools.cleanCategory(parentCategoryId);
 				// console.log(tCat + " --> " + tPCat);
 				// if(tCat.indexOf(tPCat) > -1 && tCat !== tPCat){
 					//if(tCat && tCat.length > 0){

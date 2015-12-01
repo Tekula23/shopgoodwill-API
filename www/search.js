@@ -5,6 +5,7 @@ var moment 		= require('moment-timezone');
 var url       = require('url');
 var http      = require('http');
 var ua 				= require('universal-analytics');
+var tools			= require('./tools');
 
 // var sizeOf    = require('image-size');
 // var imagesize = require('imagesize');
@@ -118,7 +119,7 @@ exports.listAuctions = function(req, res){
         var itemTH = $(el).children('th');
         auction.id = itemTH.eq(0).html().trim();
         auction.title = itemTH.eq(1).children('a').html();
-        auction.title = auction.title.replace(/(\r\n|\n|\r)/gm," ");
+        auction.title = tools.cleanTitle(auction.title);
         auction.url = itemTH.eq(1).children('a').attr('href');
         auction.img = itemTH.eq(1).children('img').attr('src');
         auction.thumbnail = auction.img.replace("-thumb","");
@@ -156,6 +157,9 @@ exports.listAuctions = function(req, res){
     } // end else
   }; // end scrapeItems
 
+  /**
+   * getImageSize
+   */
   var getImageSize = function() {
     var getImage = http.get(auction.itemImage, function (response) {
       imagesize(response, function (err, result) {

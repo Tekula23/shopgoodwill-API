@@ -2,11 +2,11 @@ var cheerio 		= require('cheerio');
 var request			= require('request');
 var url 				= require('url');
 var tidy 				= require('htmltidy').tidy;
-var Entities 		= require('html-entities').AllHtmlEntities;
 var searchUrl 	= "http://www.shopgoodwill.com/search/";
 var ua 					= require('universal-analytics');
 var _						= require('lodash');
 var fs 					= require('fs');
+var tools				= require('./tools');
 
 exports.listCategories = function(req, res){
 
@@ -16,15 +16,15 @@ exports.listCategories = function(req, res){
 
 	if(req.params.catId) {
 		queryCat = req.params.catId;
-	};
+	}
 
 	if(req.query.catId) {
 		queryCat = req.query.catId;
-	};
+	}
 
 	if(req.query.page) {
 		page = req.query.page;
-	};
+	}
 
 
  /**
@@ -119,37 +119,6 @@ exports.listCategories = function(req, res){
 		} else {
 			return { error: "There was an error loading the categories list." };
 		}
-	};
-
-
-	/**
-	 * basicTitleClean
-	 * Handles decoding the entities in the title along with some basic clean up
-	 * @param str
-	 * @return str
-	 */
-	var basicTitleClean = function(str){
-		var entities = new Entities();
-		str = entities.decode(str);
-		str = str.replace(/and/g,'&');
-		str = str.replace(/\//g,' & ');
-		str = str.replace(/\n|\r|\n\r/g,' '); //Convert new lines to spaces
-		return str;
-	};
-
-	/**
-	 * cleanCategory
-	 * Action to help clean category titles.
-	 */
-	var cleanCategory = function(catName) {
-		var tCat = catName.toLowerCase();
-		tCat = tCat.replace(/&amp;/g,'');
-		tCat = tCat.replace(/&gt;/g,'');
-		tCat = tCat.replace(/&/g,'');
-		tCat = tCat.replace(/\//g,'');
-		tCat = tCat.replace(/ /g,'');
-		tCat = tCat.trim();
-		return tCat;
 	};
 
 	if(typeof queryCat === 'undefined'){

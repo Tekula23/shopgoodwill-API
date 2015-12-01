@@ -6,6 +6,7 @@ var Entities 			= require('html-entities').AllHtmlEntities;
 var searchUrl 		= "http://www.shopgoodwill.com/";
 var changeCase 		= require('change-case');
 var ua 						= require('universal-analytics');
+var tools					= require('./tools');
 
 exports.listFeatured = function(req, res){
 
@@ -32,11 +33,7 @@ exports.listFeatured = function(req, res){
 		featuredItems.each(function(i, el){
 			var item = {};
 			item.title = $(el).children('a').children('span').first().text().trim();
-			item.title = item.title.replace(/(\r\n|\n|\r)/gm," ");
-			item.title = item.title.replace(/(~)/gim,"");
-			item.title = item.title.replace(/(�)/gim," ");
-			item.title = changeCase.titleCase(item.title);
-			item.title = updateSizes(item.title);
+			item.title = tools.cleanTitle(item.title);
 			item.url = $(el).children('a').attr('href');
 			item.url = item.url.replace(/\/auctions\//gi,'').trim();
 			item.id = item.url.replace(/.*-([0-9]*)?\.html/gim,'$1');
@@ -44,24 +41,6 @@ exports.listFeatured = function(req, res){
 		});
 
 		res.jsonp(featuredItemsArray);
-	};
-
-	/**
-   * Helper to change clothes sizes toUpperCase that were changed via change-case.
-   * @param str
-   */
-  var updateSizes = function(str){
-    return str.replace(/(XXL|XL|LRG|XXXL|SML|MED|NWT)/gi, function(a, l) { return l.toUpperCase(); });
-  };
-
-	var cleanItem = function(itemName) {
-		var tCat = itemName.toLowerCase();
-		tCat = tCat.replace(/&amp;/g,'');
-		tCat = tCat.replace(/&gt;/g,'');
-		tCat = tCat.replace(/&/g,'');
-		tCat = tCat.replace(/\//g,'');
-		tCat = tCat.replace(/ /g,'');
-		return tCat;
 	};
 
 };

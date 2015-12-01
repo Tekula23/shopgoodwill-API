@@ -4,8 +4,8 @@ var tidy      = require('htmltidy').tidy;
 var moment 		= require('moment-timezone');
 var url       = require('url');
 var http      = require('http');
-var changeCase = require('change-case');
 var ua 				= require('universal-analytics');
+var tools			= require('./tools');
 
 // var sizeOf    = require('image-size');
 // var imagesize = require('imagesize');
@@ -124,26 +124,23 @@ exports.listAuctions = function(req, res){
         var auction = {};
         var itemTH = $(el).children('th');
         auction.id = itemTH.eq(0).html().trim();
-        auction.title = itemTH.eq(1).children('a').text();
-        auction.title = auction.title.replace(/(\r\n|\n|\r)/gm," ");
-        auction.title = auction.title.replace(/(~)/gim,"");
-        auction.title = auction.title.replace(/(�)/gim," ");
-        auction.title = changeCase.titleCase(auction.title);
-        auction.title = updateSizes(auction.title);
+        auction.title = itemTH.eq(1).children('a').html();
+        auction.title = tools.cleanTitle(auction.title);
         auction.url = itemTH.eq(1).children('a').attr('href');
         auction.img = itemTH.eq(1).children('img').attr('src');
         auction.thumbnail = auction.img.replace("-thumb","");
         auction.price = itemTH.eq(2).find('b').html();
         auction.price = auction.price.replace("$","");
+        auction.price = auction.price.replace("&nbsp;"," ");
+        item.price = item.price.trim();
         auction.bids = parseInt(itemTH.eq(3).text());
         auction.end = itemTH.eq(4).text();
         auction.endDate = itemTH.eq(4).text();
-        auction.end = auction.end.replace(/PT/gim,'');
   			if(auction.end.indexOf('in') === -1){
   				var tEnd = moment(auction.end, 'MM/DD/YYYY hh:mm:ss a').fromNow();
   				auction.end = tEnd;
   			} else {
-  				auction.end = auction.end.replace(/PT/gim,'');
+  				auction.end = auction.end.replace(/\sPT/gim,'');
   			}
         searchResults.results.push(auction);
         if(itemRows.length === i+1) {
@@ -155,13 +152,8 @@ exports.listAuctions = function(req, res){
   }; // end scrapeItems
 
   /**
-   * Helper to change clothes sizes toUpperCase that were changed via change-case.
-   * @param str
+   * getImageSize
    */
-  var updateSizes = function(str){
-    return str.replace(/(XXL|XL|LRG|XXXL|SML|MED|NWT)/gi, function(a, l) { return l.toUpperCase(); });
-  };
-
   var getImageSize = function() {
     var getImage = http.get(auction.itemImage, function (response) {
       imagesize(response, function (err, result) {
