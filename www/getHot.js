@@ -62,8 +62,6 @@ exports.listHotAuctions = function(req, res){
 	} else {
 		console.log(itemRows.length + ' items found.');
 
-		entities = new Entities();
-
 		itemRows.each(function(i, el) {
 			var auction = {};
 			var itemTH = $(el).children('th');
@@ -95,22 +93,6 @@ exports.listHotAuctions = function(req, res){
 		}); // end itemRows.each
 	} // end else
 	}; // end scrapeItems
-
-	/**
-   * cleanTitle
-   * Handles cleaning auction titles.
-   */
-  var cleanTitle = function(str){
-    var entities = new Entities();
-    var title = str.replace(/(\r\n|\n|\r)/gm," ");
-    title = title.replace(/(~)/gim,"");
-    title = title.replace(/(�)/gim,"–");
-    title = entities.decode(title);
-    title = updateSizes(title);
-    // title = changeCase.titleCase(title); //Messes up slashes
-    title = updateSizes(title);
-    return title;
-  };
 
 	/**
 	 * getImageSize
