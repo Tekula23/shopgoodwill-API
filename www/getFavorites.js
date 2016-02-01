@@ -60,4 +60,4 @@ exports.listFavorites = function(req, res){
   res.jsonp(favorites);
 
 
-}
+};

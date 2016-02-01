@@ -1,6 +1,5 @@
 var express	= require('express');
 var path		= require('path');
-var app			= express();
 var port		= process.env.PORT || 5000;
 var os			= require('os');
 var ua 			= require('universal-analytics');
@@ -8,8 +7,16 @@ var nr 			= require('newrelic');
 var socket 	= require('socket.io');
 var visitor = ua(process.env.GA_UA);
 var iconv 	= require('iconv-lite');
+// store session state in browser cookie
+// var cookieSession = require('cookie-session');
 
 var encoding = 'utf-8';//'windows-1252';
+
+var app	= express();
+
+// app.use(cookieSession({
+//   keys: ['ASPSESSIONIDQCASQDCT', 'CookieTest', '__qca', '__utma', '__utmc', '__utmz']
+// }));
 
 app.listen(port, function() {
 	console.log("Listening on " + port);
@@ -26,6 +33,7 @@ app.all("/*", function(req, res, next){
 	return next();
 });
 
+var auth  					= require('./www/auth.js');
 var getHot  				= require('./www/getHot.js');
 var getSellers			= require('./www/getSellers.js');
 var getCategories		= require('./www/getCategories.js');
@@ -37,6 +45,7 @@ var getGallery			= require('./www/getAuctionGallery.js');
 var search					= require('./www/search.js');
 var getFavorites		= require('./www/getFavorites.js');
 
+app.get('/login', auth.doLogin);
 app.get('/hot', getHot.listHotAuctions);
 app.get('/categories', getCategories.listCategories);
 app.get('/list', getCategoryList.listCategories);
