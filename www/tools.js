@@ -14,6 +14,7 @@ module.exports = {
 		var title = str.replace(/(\r\n|\n|\r)/gm," ");
 		title = title.replace(/(~)/gim,"");
 		title = title.replace(/(�)/gim,"–");
+		title = title.replace(/(ï¿½)/gim,"–");
 		title = entities.decode(title);
 		// title = changeCase.titleCase(title); //Messes up slashes
     title = updateSizes(title);
