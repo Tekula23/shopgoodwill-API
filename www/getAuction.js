@@ -78,6 +78,11 @@ exports.viewAuction = function(req, res){
 				galleryImages.each(function(i, key){
 					if(typeof key !== 'undefined'){
 						if(typeof $(key).attr('href') !== 'undefined'){
+
+							//Update the main image with the one from the gallery (better quality).
+							if(i < 1){
+								item.img = $(key).attr('href');
+							}
 							item.gallery.push({
 								img: $(key).attr('href')
 							});

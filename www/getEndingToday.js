@@ -59,7 +59,7 @@ exports.listAuctions = function(req, res){
   }
 
   var url = {
-    base:   'http://www.shopgoodwill.com/search/listByCat.asp?showthumbs=on&closed=no&SortOrder=a&',
+    base:   'http://www.shopgoodwill.com/search/listByCat.asp?SortOrder=a&',
     page:   queryPage,
     seller: querySeller,
     cat:    queryCat,
